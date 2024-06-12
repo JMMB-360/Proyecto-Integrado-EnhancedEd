@@ -1,6 +1,10 @@
+import { importProvidersFrom } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
-import { appConfig } from './app/app.config';
-import { AppComponent } from './app/app.component';
+import { HttpClientModule } from '@angular/common/http';
+import { MenuComponent } from './app/menu/menu.component';
+import '@fortawesome/fontawesome-free/js/all.min.js';
 
-bootstrapApplication(AppComponent, appConfig)
-  .catch((err) => console.error(err));
+bootstrapApplication(MenuComponent, {
+  providers: [importProvidersFrom(HttpClientModule)]
+})
+  .catch(err => console.error(err));

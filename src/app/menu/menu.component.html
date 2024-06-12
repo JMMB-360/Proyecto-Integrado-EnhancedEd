@@ -1,0 +1,83 @@
+@if (menuActual != 'login') {
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Gestión de documentos</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <div class="row w-100">
+                    <div class="col-9">
+                        <ul class="navbar-nav">
+                            <li class="nav-item active">
+                                <a class="nav-link" href="#" (click)="cambiarMenu('lobby')">Inicio</a>
+                            </li>
+                            @if(permisos) {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" id="usuarioDropdown" role="button" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    Usuario
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="usuarioDropdown">
+                                    <li><a class="dropdown-item" href="#" (click)="cambiarMenu('registro')">Registrar</a></li>
+                                    <li><a class="dropdown-item" href="#" (click)="cambiarMenu('buscarUsuarios')">Buscar</a></li>
+                                    </ul>
+                                </li>
+                            }
+                            @if(!root) {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" id="documentoDropdown" role="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    Documento
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="documentoDropdown">
+                                    <li><a class="dropdown-item" href="#" (click)="cambiarMenu('editor')">Nuevo</a></li>
+                                    <li><a class="dropdown-item" href="#" (click)="cambiarMenu('buscarDocumentos')">Buscar</a></li>
+                                    </ul>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                    <div class="col-3 d-flex justify-content-end">
+                        <button class="btn btn-secondary" (click)="cerrarSesion()">
+                            <i class="fa-solid fa-right-to-bracket"></i>
+                            Cerrar sesión
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+}
+
+<div class="menuDiv container">
+    @if (menuActual === 'registro') {
+        <h1 class="mt-4">Registro de usuario</h1><hr class="mb-4">
+        <app-registro></app-registro>
+    }
+
+    @if (menuActual === 'login') {
+        <h1 class="mt-4">Inicio de sesión</h1><hr class="mb-4">
+        <app-login></app-login>
+    }
+
+    @if (menuActual === 'lobby') {
+        <app-lobby></app-lobby>
+    }
+
+    @if (menuActual === 'buscarUsuarios') {
+        <h1 class="mt-4">Lista de usuarios</h1><hr class="mb-4">
+        <app-lista-usuarios></app-lista-usuarios>
+    }
+
+    @if (menuActual === 'editor') {
+        <h1 class="mt-4">Nuevo documento</h1><hr class="mb-4">
+        <app-editor></app-editor>
+    }
+
+    @if (menuActual === 'buscarDocumentos') {
+        <h1 class="mt-4">Lista de documentos</h1><hr class="mb-4">
+        <app-lista-documentos></app-lista-documentos>
+    }
+</div>

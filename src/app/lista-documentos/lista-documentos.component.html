@@ -1,0 +1,128 @@
+@if(mostrarLista) {
+    <table class="table table-striped">
+        <tbody>
+            @for (documento of listaDocumentos; track documento.id) {
+                <tr>
+                    <td scope="row">{{documento.nombre}}</td>
+                    <td scope="row" class="text-end">
+                        <button class="btn" (click)="mostrarModificar(documento.id, documento.nombre)" title="Modificar">
+                            <i class="fa-solid fa-pen editBtn" alt="Editar sección"></i>
+                        </button>
+                        <button class="btn" (click)="generatePdf(documento.nombre)" title="GenerarPDF">
+                            <i class="fa-solid fa-download downloadBtn" alt="Generar PDF"></i>
+                        </button>
+                        <button class="btn" (click)="eliminarDoc(documento.id, documento.nombre)" title="Eliminar">
+                            <i class="fa-solid fa-trash deleteBtn" alt="Eliminar documento"></i>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+@if(mostrarModificarForm) {
+<div class="row">
+    <div class="col-8 offset-2 editorBox rounded-5 shadow bg-white">
+        <form [formGroup]="docForm" (ngSubmit)="modificarDoc()">
+                <label for="documento" class="mb-2">Nombre del documento:</label>
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" formControlName="nombre">
+                    <div class="input-group-append">
+                      <button class="btn btn-outline-primary" type="submit">Cambiar</button>
+                    </div>
+                </div>
+        </form>
+
+        <h2>{{docForm.value.nombre}}: {{secForm.value.nombre}}</h2>
+        <form [formGroup]="secForm" (ngSubmit)="anadirSec()">
+            <div class="container">
+
+                <div class="row">
+                    <label for="seccion" class="mb-2">Título de la sección:</label>
+                    <div class="col-10">
+                        <input class="form-control" type="text" formControlName="nombre">
+                    </div>
+                    <div class="col-2">
+                        <input class="form-control" type="number" formControlName="numero" placeholder="Nº">
+                    </div>
+                    
+                </div>
+
+                <div class="row mt-4">
+                    <label for="contenido" class="mb-2">Contenido de la sección:</label>
+                    <textarea class="form-control" formControlName="contenido" rows="5"></textarea>
+
+                    <div class="col-6 offset-6 text-end mt-3">
+                        <button class="btn btn-primary" type="submit" style="margin-right: 15px;">Añadir</button>
+                        <button class="btn btn-secondary" type="button" (click)="resetSecForm()">Reiniciar</button>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+        <h2>Secciones</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Sección</th>
+                    <th scope="col">Índice</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for(seccion of listaSecciones; track seccion.id) {
+                    <tr>
+                        <td>{{ seccion.nombre }}</td>
+                        <td>{{ seccion.numero }}</td>
+                        <td scope="row" class="text-end">
+                            <button class="btn" (click)="mostrarModificarSec(seccion.id)">
+                                <i class="fa-solid fa-pen editBtn" alt="Editar sección"></i>
+                            </button>
+                            <button class="btn" (click)="eliminarSec(seccion.id, seccion.nombre)">
+                                <i class="fa-solid fa-trash deleteBtn" alt="Eliminar sección"></i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div class="row mt-5">
+            <div class="col-6 offset-6 text-end">
+                <button class="btn btn-primary" type="button" (click)="aplicarSecs()" style="margin-right: 15px;">Aplicar secciones</button>
+                <button class="btn btn-secondary" type="button" (click)="return()">Volver</button>
+            </div>
+        </div>
+    </div>
+</div>
+}
+@if(mostrarModificarSecForm) {
+    <div class="row">
+        <div class="col-8 offset-2 editorBox rounded-5 shadow bg-white">
+            <h2>{{docForm.value.nombre}}: {{editSecForm.value.nombre}}</h2>
+            <form [formGroup]="editSecForm" (ngSubmit)="modificarSec(idEditSec)">
+                <div class="container">
+
+                    <div class="row">
+                        <label for="seccion" class="mb-2">Título de la sección:</label>
+                        <div class="col-10">
+                            <input class="form-control" type="text" formControlName="nombre">
+                        </div>
+                        <div class="col-2">
+                            <input class="form-control" type="number" formControlName="numero" placeholder="Nº">
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <label for="contenido" class="mb-2">Contenido de la sección:</label>
+                        <textarea class="form-control" formControlName="contenido" rows="5"></textarea>
+
+                        <div class="col-6 offset-6 text-end mt-3">
+                            <button class="btn btn-primary" type="submit" style="margin-right: 15px;">Confirmar</button>
+                            <button class="btn btn-secondary" type="button" (click)="cancelarSecEdit()">Cancelar</button>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+}

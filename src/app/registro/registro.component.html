@@ -1,0 +1,54 @@
+<div class="row">
+    <div class="col-6 offset-3 registroBox rounded-5 shadow bg-white">
+        <form [formGroup]="form" (ngSubmit)="crear()">
+            
+            <div class="row">
+                <div class="col">
+                    <label for="dni" class="mb-2">DNI:</label>
+                    <input class="form-control" type="text" id="dni" formControlName="dni">
+                </div>
+                <div class="col">
+                    <label for="nombre" class="mb-2">Nombre:</label>
+                    <input class="form-control" type="text" id="nombre" formControlName="nombre">
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col">
+                    <label for="apellidos" class="mb-2">Apellidos:</label>
+                    <input class="form-control" type="text" id="apellidos" formControlName="apellidos">
+                </div>
+                <div class="col">
+                    <label for="usuario" class="mb-2">Usuario:</label>
+                    <input class="form-control" type="text" id="usuario" formControlName="usuario">
+                </div>
+            </div>
+
+            <div class="mt-4">
+            </div>
+            <div class="row mt-4">
+                <div class="col">
+                    <label for="contrasena" class="mb-2">Contraseña:</label>
+                    <input class="form-control" type="password" id="contrasena" formControlName="contrasena">
+                </div>
+                <div class="col">
+                    <label for="perfil" class="mb-2">Perfil:</label>
+                    <select class="form-select" id="perfil" formControlName="perfil">
+                        <option value="ADMINISTRADOR">Administrador</option>
+                        <option value="PROFESOR">Profesor</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row mt-5">
+                <div class="col-6 text-center">
+                    <button class="btn btn-secondary w-75" type="button" (click)="resetForm()">Cancelar</button>
+                </div>
+                <div class="col-6 text-center">
+                    <button class="btn btn-primary w-75" type="submit">Aceptar</button>
+                </div>
+            </div>
+            
+        </form>
+    </div>
+</div>

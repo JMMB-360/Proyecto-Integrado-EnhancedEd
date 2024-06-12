@@ -1,0 +1,86 @@
+@if(mostrarLista) {
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Nombre</th>
+                <th scope="col">Apellidos</th>
+                <th scope="col">Usuario</th>
+                <th scope="col">Perfil</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (usuario of listaUsuario; track usuario.id) {
+                <tr>
+                    <td scope="row">{{usuario.nombre}}</td>
+                    <td scope="row">{{usuario.apellidos}}</td>
+                    <td scope="row">{{usuario.usuario}}</td>
+                    <td scope="row">{{usuario.perfil}}</td>
+                    <td scope="row" class="text-end">
+                        <button class="btn" (click)="mostrarModificar(usuario.id, usuario.usuario)" style="margin-right: 10px;">
+                            <i class="fa-solid fa-pen editBtn" alt="Editar sección"></i>
+                        </button>
+                        <button class="btn" (click)="eliminar(usuario.id, usuario.nombre, usuario.apellidos)">
+                            <i class="fa-solid fa-trash deleteBtn" alt="Eliminar sección"></i>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+@if(mostrarModificarForm) {
+    <div class="row">
+        <div class="col-6 offset-3 registroBox rounded-5 shadow bg-white">
+            <form [formGroup]="editUserForm" (ngSubmit)="modificar(idEditUser)">
+
+                <div class="row">
+                    <div class="col">
+                        <label for="dni" class="mb-2">DNI:</label>
+                        <input class="form-control" type="text" id="dni" formControlName="dni">
+                    </div>
+                    <div class="col">
+                        <label for="nombre" class="mb-2">Nombre:</label>
+                        <input class="form-control" type="text" id="nombre" formControlName="nombre">
+                    </div>
+                </div>
+    
+                <div class="row mt-4">
+                    <div class="col">
+                        <label for="apellidos" class="mb-2">Apellidos:</label>
+                        <input class="form-control" type="text" id="apellidos" formControlName="apellidos">
+                    </div>
+                    <div class="col">
+                        <label for="usuario" class="mb-2">Usuario:</label>
+                        <input class="form-control" type="text" id="usuario" formControlName="usuario">
+                    </div>
+                </div>
+    
+                <div class="mt-4">
+                </div>
+                <div class="row mt-4">
+                    <div class="col">
+                        <label for="contrasena" class="mb-2">Contraseña:</label>
+                        <input class="form-control" type="password" id="contrasena" formControlName="contrasena">
+                    </div>
+                    <div class="col">
+                        <label for="perfil" class="mb-2">Perfil:</label>
+                        <select class="form-select" id="perfil" formControlName="perfil">
+                            <option value="ADMINISTRADOR">Administrador</option>
+                            <option value="PROFESOR">Profesor</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="row mt-5">
+                    <div class="col-6 text-center">
+                        <button class="btn btn-secondary w-75" type="button" (click)="cancelarEdit()">Cancelar</button>
+                    </div>
+                    <div class="col-6 text-center">
+                        <button class="btn btn-primary w-75" type="submit">Aceptar</button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+}

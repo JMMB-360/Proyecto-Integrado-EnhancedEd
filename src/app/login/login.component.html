@@ -1,0 +1,24 @@
+<div class="row">
+    <div class="col-4 offset-4 loginBox rounded-5 shadow bg-white">
+        <form [formGroup]="form" (ngSubmit)="validar()">
+            <div>
+                <label for="usuario" class="mb-2">Usuario:</label>
+                <input class="form-control" type="text" id="usuario" formControlName="usuario">
+            </div>
+
+            <div class="mt-4">
+                <label for="contrasena" class="mb-2">Contraseña:</label>
+                <input class="form-control" type="password" id="contrasena" formControlName="contrasena">
+            </div>
+            
+            <div class="row mt-5">
+                <div class="col-6 text-center">
+                    <button class="btn btn-secondary w-75" (click)="resetForm()">Cancelar</button>
+                </div>
+                <div class="col-6 text-center">
+                    <button class="btn btn-primary w-75" type="submit">Aceptar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
