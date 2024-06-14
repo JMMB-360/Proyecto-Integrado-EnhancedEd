@@ -27,8 +27,10 @@ export class LoginComponent {
   async validar() {
     const usuario = this.form.value.usuario;
     const contrasena = this.form.value.contrasena;
-    
-    const resultado = await this.userService.login(usuario, contrasena);
+    let resultado = null;
+    if(usuario != 'root') {
+      resultado = await this.userService.login(usuario, contrasena);
+    }
     if (resultado) {
       Usuario.setUsuarioLogueado( await this.userService.buscarUsuarioPorUser(resultado.usuario));
       this.menuService.cambiarMenu('lobby');

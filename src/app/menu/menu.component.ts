@@ -23,7 +23,6 @@ export class MenuComponent {
   
   userService: Usuario = new Usuario();
   logedUser: Usuario | null = new Usuario();
-  perfiles: Perfil[] = [Perfil.ADMINISTRADOR, Perfil.PROFESOR];
   menuActual: String = 'login';
   permisos: boolean = false;
   root: boolean = false;
@@ -32,23 +31,21 @@ export class MenuComponent {
   }
   
   cambiarMenu(menu: String) {
-    if(this.logedUser?.nombre === '') {
-      this.logedUser = Usuario.getUsuarioLogueado();
-      if(this.logedUser?.perfil === Perfil.ADMINISTRADOR) {
-        this.permisos = true;
-      }
-      if(this.logedUser?.nombre === "root") {
-        this.root = true;
-      }
+    this.logedUser = Usuario.getUsuarioLogueado();
+    if(this.logedUser?.perfil === Perfil.ADMINISTRADOR && this.logedUser?.nombre != '') {
+      this.permisos = true;
+    }
+    if(this.logedUser?.nombre === "root") {
+      this.root = true;
     }
     this.menuActual = menu;
   }
 
   cerrarSesion() {
     Usuario.setUsuarioLogueado(new Usuario());
-    this.menuActual = 'login';
     this.permisos = false;
     this.root = false;
+    this.cambiarMenu('login');
   }
 
 }
