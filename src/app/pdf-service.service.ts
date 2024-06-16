@@ -39,7 +39,7 @@ export class PdfService {
     // Crear el contenido de las secciones
     const secciones = seccionesOrdenadas.map(seccion => {
       return [
-        { text: `${seccion.nombre}`, style: 'sectionHeader', pageBreak: 'before' },
+        { text: `${seccion.numero}. ${seccion.nombre}`, style: 'sectionHeader', pageBreak: 'before' },
         { text: seccion.contenido }
       ];
     });
