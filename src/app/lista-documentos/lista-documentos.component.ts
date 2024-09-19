@@ -157,14 +157,22 @@ export class ListaDocumentosComponent implements OnInit {
     }
   }
 
-  aplicarSecs() {
-    if(this.listaSecciones[0] != null) {
-      this.docService.modificarDocumento(this.documentoMod.id, this.docForm.value.nombre, this.listaSecciones);
-      this.recordatorio = false;
-      alert('Secciones aplicadas ✔️​');
-    } else {
-      alert('No hay ninguna sección añadida ❌');
-    }
+  aplicarCambios() {
+    // if(this.listaSecciones[0] != null) {
+      
+    // } else {
+    //   alert('No hay ninguna sección añadida ❌');
+    // }
+    this.docService.modificarDocumento(this.documentoMod.id, this.docForm.value.nombre, this.listaSecciones);
+    // this.recordatorio = false;
+    this.modificarDoc();
+    alert('Cambios aplicados ✔️​');
+    this.docForm.reset();
+    this.secForm.reset();
+    this.listaSecciones = [];
+    this.documentoMod = new Documento();
+    this.mostrarModificarForm = false;
+    this.mostrarLista = true;
   }
 
   async mostrarModificar(id: number, nombre: string) {
@@ -196,20 +204,6 @@ export class ListaDocumentosComponent implements OnInit {
 
   ordenarSecciones() {
     this.listaSecciones.sort((sec1, sec2) => sec1.numero - sec2.numero);
-  }
-
-  return() {
-    if(this.recordatorio) {
-      alert("No olvides aplicar las secciones! ⚠️");
-      return;
-    } else {
-      this.docForm.reset();
-      this.secForm.reset();
-      this.listaSecciones = [];
-      this.documentoMod = new Documento();
-      this.mostrarModificarForm = false;
-      this.mostrarLista = true;
-    }
   }
 
   cancelarSecEdit() {

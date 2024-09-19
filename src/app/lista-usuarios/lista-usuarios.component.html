@@ -2,6 +2,7 @@
     <table class="table table-striped">
         <thead>
             <tr>
+                <th scope="col">DNI</th>
                 <th scope="col">Nombre</th>
                 <th scope="col">Apellidos</th>
                 <th scope="col">Usuario</th>
@@ -11,6 +12,7 @@
         <tbody>
             @for (usuario of listaUsuario; track usuario.id) {
                 <tr>
+                    <td scope="row">{{usuario.dni}}</td>
                     <td scope="row">{{usuario.nombre}}</td>
                     <td scope="row">{{usuario.apellidos}}</td>
                     <td scope="row">{{usuario.usuario}}</td>

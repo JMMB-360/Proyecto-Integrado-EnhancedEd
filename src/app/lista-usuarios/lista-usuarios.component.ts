@@ -65,6 +65,14 @@ export class ListaUsuariosComponent implements OnInit {
     const perfil = this.editUserForm.value.perfil;
 
     await this.userService.modificarUsuario(id, dni, nombre, apellidos, usuario, contrasena, perfil);
+    const index = this.listaUsuario.findIndex(user => user.id === this.idEditUser);
+      if (index !== -1) {
+        this.listaUsuario[index].dni = this.editUserForm.value.dni;
+        this.listaUsuario[index].nombre = this.editUserForm.value.nombre;
+        this.listaUsuario[index].apellidos = this.editUserForm.value.apellidos;
+        this.listaUsuario[index].usuario = this.usuario;
+        this.listaUsuario[index].perfil = this.editUserForm.value.perfil;
+      }
     alert("Usuario modificado correctamente ✔️");
     this.editUserForm.reset();
     this.mostrarModificarForm = false;
@@ -125,16 +133,20 @@ export class ListaUsuariosComponent implements OnInit {
     this.mostrarModificarForm = true;
     this.idEditUser = id;
 
-    this.subscriptions.add(
-      this.editUserForm.get('nombre')?.valueChanges.subscribe(() => this.updateUsuario())
-    );
-    this.subscriptions.add(
-      this.editUserForm.get('apellidos')?.valueChanges.subscribe(() => this.updateUsuario())
-    );
-    this.subscriptions.add(
-      this.editUserForm.get('dni')?.valueChanges.subscribe(() => this.updateUsuario())
-    );
-    this.updateUsuario();
+    if (usuario.usuario != "root") {
+      this.subscriptions.add(
+        this.editUserForm.get('nombre')?.valueChanges.subscribe(() => this.updateUsuario())
+      );
+      this.subscriptions.add(
+        this.editUserForm.get('apellidos')?.valueChanges.subscribe(() => this.updateUsuario())
+      );
+      this.subscriptions.add(
+        this.editUserForm.get('dni')?.valueChanges.subscribe(() => this.updateUsuario())
+      );
+      this.updateUsuario();
+    } else {
+      this.usuario = "root";
+    }
   }
 
   cancelarEdit() {

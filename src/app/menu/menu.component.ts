@@ -32,10 +32,10 @@ export class MenuComponent {
   
   cambiarMenu(menu: String) {
     this.logedUser = Usuario.getUsuarioLogueado();
-    if(this.logedUser?.perfil === Perfil.ADMINISTRADOR && this.logedUser?.nombre != '') {
+    if(this.logedUser?.perfil === Perfil.ADMINISTRADOR) {
       this.permisos = true;
     }
-    if(this.logedUser?.nombre === "root") {
+    if(this.logedUser?.usuario === "root") {
       this.root = true;
     }
     this.menuActual = menu;

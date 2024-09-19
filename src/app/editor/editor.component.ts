@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { Usuario } from '../entities/usuario/usuario';
 import { Documento } from '../entities/documento/documento';
 import { Seccion } from '../entities/seccion/seccion';
+import { MenuComponent } from '../menu/menu.component';
 
 @Component({
   standalone: true,
@@ -27,7 +28,8 @@ export class EditorComponent {
   mostrarEditarSec: boolean = false;
   idEditSec: number = 0;
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(private formBuilder: FormBuilder,
+              private menuService: MenuComponent) {
     this.docForm = this.formBuilder.group({
       nombre: ['', Validators.required],
       secciones: [[]]
@@ -80,7 +82,6 @@ export class EditorComponent {
       } else {
         this.listaSecciones.push(await this.secService.crearSeccion(nombre, numero, contenido, this.documento.id));
         this.ordenarSecciones();
-        alert('Sección añadida ✔️​');
         this.secForm.reset();
       }
     } else {
@@ -131,18 +132,9 @@ export class EditorComponent {
   }
 
   aplicarSecs() {
-    if(this.listaSecciones[0] != null) {
-      this.docService.modificarDocumento(this.documento.id, this.documento.nombre, this.listaSecciones);
-      this.listaSecciones = [];
-      this.docForm.reset();
-      this.secForm.reset();
-      this.documento = new Documento();
-      this.mostrarSecForm = false;
-      this.mostrarDocForm = true;
-      alert('Secciones aplicadas ✔️​');
-    } else {
-      alert('No hay ninguna sección añadida ❌');
-    }
+    this.docService.modificarDocumento(this.documento.id, this.documento.nombre, this.listaSecciones);
+    alert('Secciones aplicadas ✔️​');
+    this.menuService.cambiarMenu('buscarDocumentos');
   }
 
   async mostrarModificar(id: number) {

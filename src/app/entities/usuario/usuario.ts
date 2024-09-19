@@ -73,7 +73,11 @@ export class Usuario {
         }
         try {
             const respuesta = await fetch(URL, configuracion);
-            return respuesta.json();
+            if (!respuesta.ok) {
+                console.error(`Error: ${respuesta.status}`);
+                return null;
+            }
+            return await respuesta.json();
         } catch (error) {
             console.error("Error en la solicitud: ", error);
         }

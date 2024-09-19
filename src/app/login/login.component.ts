@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Usuario } from '../entities/usuario/usuario';
+import { Perfil, Usuario } from '../entities/usuario/usuario';
 import { MenuComponent } from '../menu/menu.component';
 
 @Component({
@@ -22,26 +22,30 @@ export class LoginComponent {
       usuario: ['', Validators.required],
       contrasena: ['', Validators.required]
     });
+    this.crearRoot();
   }
 
   async validar() {
     const usuario = this.form.value.usuario;
     const contrasena = this.form.value.contrasena;
-    let resultado = null;
-    if(usuario != 'root') {
-      resultado = await this.userService.login(usuario, contrasena);
-    }
+    let resultado = await this.userService.login(usuario, contrasena);
+
     if (resultado) {
       Usuario.setUsuarioLogueado( await this.userService.buscarUsuarioPorUser(resultado.usuario));
-      this.menuService.cambiarMenu('lobby');
       alert('Login exitoso ✔️​');
-    } else if(usuario === "root") {
-      Usuario.setUsuarioLogueado(new Usuario("","root"));
-      alert('Login exitoso ✔️​');
-      alert("root solo puede gestionar usuarios ⚠️");
       this.menuService.cambiarMenu('lobby');
+      if (usuario === "root") {
+        alert("root solo puede gestionar usuarios, si quiere crear documentos debe crear un usuario antes ⚠️");
+      }
     } else {
       alert('Los datos no coinciden ❌');
+    }
+  }
+
+  async crearRoot() {
+    let resultado = await this.userService.buscarUsuarioPorUser("root");
+    if (!resultado) {
+      await this.userService.crearUsuario("11111111A","root","","root","root", Perfil.ADMINISTRADOR);
     }
   }
 
