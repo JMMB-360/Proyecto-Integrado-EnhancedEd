@@ -6,10 +6,13 @@
                     <td scope="row">{{documento.nombre}}</td>
                     <td scope="row" class="text-end">
                         <button class="btn" (click)="mostrarModificar(documento.id, documento.nombre)" title="Modificar">
-                            <i class="fa-solid fa-pen editBtn" alt="Editar sección"></i>
+                            <i class="fa-solid fa-pen editBtn" alt="Editar documento"></i>
                         </button>
-                        <button class="btn" (click)="generatePdf(documento.nombre)" title="GenerarPDF">
+                        <button class="btn" (click)="generatePdf(documento.nombre)" title="Generar PDF">
                             <i class="fa-solid fa-download downloadBtn" alt="Generar PDF"></i>
+                        </button>
+                        <button class="btn" (click)="duplicarDocumento(documento.nombre)" title="Duplicar">
+                            <i class="fa-solid fa-copy duplicateBtn" alt="Duplicar documento"></i>
                         </button>
                         <button class="btn" (click)="eliminarDoc(documento.id, documento.nombre)" title="Eliminar">
                             <i class="fa-solid fa-trash deleteBtn" alt="Eliminar documento"></i>
@@ -23,7 +26,7 @@
 @if(mostrarModificarForm) {
 <div class="row">
     <div class="col-8 offset-2 editorBox rounded-5 shadow bg-white">
-        <form [formGroup]="docForm" (ngSubmit)="modificarDoc()">
+        <form [formGroup]="docForm">
                 <label for="documento" class="mb-2">Nombre del documento:</label>
                 <div class="input-group mb-3">
                     <input type="text" class="form-control" formControlName="nombre">
@@ -83,8 +86,9 @@
             </tbody>
         </table>
         <div class="row mt-5">
-            <div class="col-4 offset-8 text-end">
-                <button class="btn btn-primary" type="button" (click)="aplicarCambios()" style="margin-right: 15px;">Aplicar cambios</button>
+            <div class="col-6 offset-6 text-end">
+                <button [disabled]="!cambios" class="btn btn-primary" type="button" (click)="aplicarCambios()" style="margin-right: 15px;">Aplicar</button>
+                <button class="btn btn-secondary" type="button" (click)="cancelarCambios()">Cancelar</button>
             </div>
         </div>
     </div>
@@ -112,7 +116,7 @@
                         <textarea class="form-control" formControlName="contenido" rows="5"></textarea>
 
                         <div class="col-6 offset-6 text-end mt-3">
-                            <button class="btn btn-primary" type="submit" style="margin-right: 15px;">Aplicar</button>
+                            <button [disabled]="!cambios" class="btn btn-primary" type="submit" style="margin-right: 15px;">Aplicar</button>
                             <button class="btn btn-secondary" type="button" (click)="cancelarSecEdit()">Cancelar</button>
                         </div>
                     </div>

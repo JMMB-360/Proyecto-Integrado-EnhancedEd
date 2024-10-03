@@ -24,6 +24,7 @@ export class MenuComponent {
   userService: Usuario = new Usuario();
   logedUser: Usuario | null = new Usuario();
   menuActual: String = 'login';
+  ocultarMenuNav: boolean = false;
   permisos: boolean = false;
   root: boolean = false;
   
@@ -46,6 +47,10 @@ export class MenuComponent {
     this.permisos = false;
     this.root = false;
     this.cambiarMenu('login');
+  }
+
+  ocultarMenu(valor: boolean) {
+    this.ocultarMenuNav = valor;
   }
 
 }

@@ -1,17 +1,27 @@
 <div class="row">
     <div class="col-8 offset-2 editorBox rounded-5 shadow bg-white">
         @if(mostrarDocForm) {
-            <form [formGroup]="docForm" (ngSubmit)="guardarDoc()">
+            <form [formGroup]="docForm" (ngSubmit)="crearDoc()">
                 <label for="documento" class="mb-2">Nombre del documento:</label>
                 <div class="input-group mb-3">
                     <input type="text" class="form-control" formControlName="nombre">
-                    <div class="input-group-append">
-                      <button class="btn btn-outline-primary" type="submit">Guardar</button>
+                </div>
+                
+                <div class="row mt-5">
+                    <div class="col-6 offset-6 text-end">
+                        <button class="btn btn-primary" type="submit" style="margin-right: 15px;">Crear</button>
+                        <button class="btn btn-secondary" type="button" (click)="salir()">Salir</button>
                     </div>
                 </div>
             </form>
         }
         @if(mostrarSecForm) {
+            <form [formGroup]="docForm">
+                    <label for="documento" class="mb-2">Nombre del documento:</label>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" formControlName="nombre">
+                    </div>
+            </form>
             <h2>{{docForm.value.nombre}}: {{secForm.value.nombre}}</h2>
             <form [formGroup]="secForm" (ngSubmit)="anadirSec()">
                 <div class="container">
@@ -64,8 +74,9 @@
                 </tbody>
             </table>
             <div class="row mt-5">
-                <div class="col-4 offset-8 text-end">
-                    <button class="btn btn-primary" type="button" (click)="aplicarSecs()">Aplicar secciones</button>
+                <div class="col-6 offset-6 text-end">
+                    <button class="btn btn-primary" type="button" (click)="aplicar()" style="margin-right: 15px;">Aplicar</button>
+                    <button class="btn btn-secondary" type="button" (click)="salir()">Salir</button>
                 </div>
             </div>
         }

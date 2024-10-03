@@ -133,19 +133,16 @@ public class Servicio {
     }
 	public Documento modificarDocumento(Long id, String nombre, List<Seccion> secciones) {
 		Documento doc = docRepo.getReferenceById(id);
-
 	    doc.setNombre(nombre);
+	    
 	    List<Seccion> seccionesActuales = doc.getSecciones();
 	    
-	    // Eliminar las secciones que ya no están en la nueva lista
 	    for (Seccion seccionActual : seccionesActuales) {
 	        if (!secciones.contains(seccionActual)) {
 	            seccionActual.setDocumento(null);
 	            secRepo.delete(seccionActual);
 	        }
 	    }
-
-	    // Agregar o actualizar las secciones nuevas
 	    for (Seccion seccionNueva : secciones) {
 	        seccionNueva.setDocumento(doc);
 	        if (seccionNueva.getId() == null) {
@@ -157,9 +154,8 @@ public class Servicio {
 	            seccionExistente.setContenido(seccionNueva.getContenido());
 	        }
 	    }
-
+	    
 	    doc.setSecciones(secciones);
-
 	    docRepo.save(doc);
 	    return doc;
     }
@@ -197,6 +193,11 @@ public class Servicio {
 		docRepo.deleteById(id);
 	}
 	public void eliminarSeccion(Long id) {
+		secRepo.deleteById(id);
+	}
+	public void eliminarSeccionDefinitivo(Long id) {
+		Seccion seccion = secRepo.getReferenceById(id);
+		seccion.setDocumento(null);
 		secRepo.deleteById(id);
 	}
 }

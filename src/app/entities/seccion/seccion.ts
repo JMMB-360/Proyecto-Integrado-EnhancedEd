@@ -102,4 +102,17 @@ export class Seccion {
         const respuesta = await fetch(URL, configuracion);
         return respuesta;
     }
+    
+    async eliminarSeccionDefinitivo(id: number) {
+        const URL = `http://localhost:9999/secciones/eliminarDefinitivo/${id}`;
+        const configuracion = {
+        method: "DELETE",
+        headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+        },
+        }
+        const respuesta = await fetch(URL, configuracion);
+        return respuesta;
+    }
 }

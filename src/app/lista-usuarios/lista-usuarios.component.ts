@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Perfil, Usuario } from '../entities/usuario/usuario';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Usuario } from '../entities/usuario/usuario';
 import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
@@ -13,6 +13,8 @@ import { Subscription } from 'rxjs';
 })
 export class ListaUsuariosComponent implements OnInit {
 
+  @Output() ocultarMenu = new EventEmitter<boolean>();
+
   editUserForm: FormGroup;
 
   listaUsuario: Usuario[] = [];
@@ -20,6 +22,7 @@ export class ListaUsuariosComponent implements OnInit {
   idEditUser: number = 0;
   usuario: string = '';
 
+  cambios: boolean = false;
   mostrarLista: boolean = true;
   mostrarModificarForm: boolean = false;
 
@@ -34,11 +37,13 @@ export class ListaUsuariosComponent implements OnInit {
       contrasena: ['', [Validators.required, this.passwordValidator]],
       perfil: ['', Validators.required]
     });
+    this.editUserForm.valueChanges.subscribe(() => {
+      this.cambios = true;
+    });
   }
 
   async ngOnInit() {
-    const usuarios = await this.userService.buscarTodosLosUsuarios();
-    this.listaUsuario = usuarios;
+    this.ordenarListaUsuarios();
   }
 
   ngOnDestroy() {
@@ -66,15 +71,17 @@ export class ListaUsuariosComponent implements OnInit {
 
     await this.userService.modificarUsuario(id, dni, nombre, apellidos, usuario, contrasena, perfil);
     const index = this.listaUsuario.findIndex(user => user.id === this.idEditUser);
-      if (index !== -1) {
-        this.listaUsuario[index].dni = this.editUserForm.value.dni;
-        this.listaUsuario[index].nombre = this.editUserForm.value.nombre;
-        this.listaUsuario[index].apellidos = this.editUserForm.value.apellidos;
-        this.listaUsuario[index].usuario = this.usuario;
-        this.listaUsuario[index].perfil = this.editUserForm.value.perfil;
-      }
+    if (index !== -1) {
+      this.listaUsuario[index].dni = this.editUserForm.value.dni;
+      this.listaUsuario[index].nombre = this.editUserForm.value.nombre;
+      this.listaUsuario[index].apellidos = this.editUserForm.value.apellidos;
+      this.listaUsuario[index].usuario = this.usuario;
+      this.listaUsuario[index].perfil = this.editUserForm.value.perfil;
+    }
+    await this.ordenarListaUsuarios();
     alert("Usuario modificado correctamente ✔️");
     this.editUserForm.reset();
+    this.emitirOcultarMenu(false);
     this.mostrarModificarForm = false;
     this.mostrarLista = true;
   }
@@ -130,6 +137,7 @@ export class ListaUsuariosComponent implements OnInit {
       perfil: usuario.perfil
     });
     this.mostrarLista = false;
+    this.emitirOcultarMenu(true);
     this.mostrarModificarForm = true;
     this.idEditUser = id;
 
@@ -147,11 +155,44 @@ export class ListaUsuariosComponent implements OnInit {
     } else {
       this.usuario = "root";
     }
+    this.cambios = false;
+  }
+
+  async ordenarListaUsuarios() {
+    try {
+      const usuarios: any[] = await this.userService.buscarTodosLosUsuarios();
+      this.listaUsuario = usuarios.sort((a, b) => {
+        const comparacion = a.nombre.localeCompare(b.nombre);
+        if (comparacion === 0) {
+          return a.apellidos.localeCompare(b.apellidos);
+        }
+        return comparacion;
+      });
+    } catch (error) {
+      console.error('Error al obtener los usuarios:', error);
+    }
   }
 
   cancelarEdit() {
+    if (this.cambios) {
+      if (window.confirm("Hay cambios sin confirmar, ¿desea continuar?")) {
+        this.salir();
+      }
+    } else {
+      this.salir();
+    }
+  }
+
+  salir() {
     this.editUserForm.reset();
     this.mostrarModificarForm = false;
+    this.emitirOcultarMenu(false);
     this.mostrarLista = true;
+  }
+
+  emitirOcultarMenu(valor: boolean) {
+    setTimeout(() => {
+      this.ocultarMenu.emit(valor);
+    });
   }
 }

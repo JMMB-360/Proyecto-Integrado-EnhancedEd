@@ -11,3 +11,6 @@
     text-align: left;
     margin-top: 4%;
 }
+button:disabled {
+    opacity: 0.3;
+}

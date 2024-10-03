@@ -1,6 +1,5 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Usuario } from '../entities/usuario/usuario';
 import { Documento } from '../entities/documento/documento';
 import { Seccion } from '../entities/seccion/seccion';
@@ -11,21 +10,29 @@ import { MenuComponent } from '../menu/menu.component';
   selector: 'app-editor',
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.css'],
-  imports: [CommonModule, FormsModule, ReactiveFormsModule]
+  imports: [ReactiveFormsModule]
 })
-export class EditorComponent {
+export class EditorComponent implements OnInit {
+
+  @Output() ocultarMenu = new EventEmitter<boolean>();
   
   docForm: FormGroup;
   secForm: FormGroup;
   editSecForm: FormGroup;
 
   documento: Documento = new Documento();
+  documentoBackUp: Documento = new Documento();
   docService: Documento = new Documento();
   secService: Seccion = new Seccion();
+  
   listaSecciones: Seccion[] = [];
+
   mostrarDocForm: boolean = true;
   mostrarSecForm: boolean = false;
   mostrarEditarSec: boolean = false;
+  cambiosDeAntes: boolean = false;
+  cambios: boolean = false;
+
   idEditSec: number = 0;
 
   constructor(private formBuilder: FormBuilder,
@@ -44,19 +51,46 @@ export class EditorComponent {
       numero: [null, Validators.required],
       contenido: ['']
     });
+    this.secForm.valueChanges.subscribe(() => {
+      this.cambios = true;
+    });
+    this.editSecForm.valueChanges.subscribe(() => {
+      this.cambios = true;
+    });
   }
 
-  async guardarDoc() {
+  ngOnInit() {
+    setTimeout(() => {
+      this.emitirOcultarMenu(true);
+    });
+  }
+
+  async crearDoc() {
     const nombre = this.docForm.value.nombre;
     const secciones = this.docForm.value.secciones;
     const userId = await Usuario.getUsuarioLogueado()?.id;
 
     if(nombre != '' && nombre != null) {
-      this.docService.crearDocumento(nombre, secciones, userId);
-      alert('Documento guardado ✔️​');
-      this.mostrarDocForm = false;
-      this.mostrarSecForm = true;
-      this.documento = await this.docService.buscarDocumentoPorNombre(this.docForm.value.nombre);
+      let newDocumento = await this.docService.crearDocumento(nombre, secciones, userId, true);
+      if (newDocumento) {
+        this.mostrarDocForm = false;
+        this.mostrarSecForm = true;
+        this.documento = await this.docService.buscarDocumentoPorNombre(this.docForm.value.nombre);
+        this.documentoBackUp = JSON.parse(JSON.stringify(this.documento));
+        this.cambios = false;
+        
+        this.docForm.valueChanges.subscribe(() => {
+          this.cambios = true;
+        });
+      }
+    } else {
+      alert('El documento debe tener un nombre ❌');
+    }
+  }
+
+  async modificarDoc() {
+    if(this.docForm.value.nombre != '' || this.docForm.value.nombre != null) {
+      await this.docService.modificarDocumento(this.documento.id, this.docForm.value.nombre, this.documento.secciones);
     } else {
       alert('El documento debe tener un nombre ❌');
     }
@@ -131,9 +165,10 @@ export class EditorComponent {
     }
   }
 
-  aplicarSecs() {
-    this.docService.modificarDocumento(this.documento.id, this.documento.nombre, this.listaSecciones);
+  aplicar() {
+    this.docService.modificarDocumento(this.documento.id, this.docForm.value.nombre, this.listaSecciones);
     alert('Secciones aplicadas ✔️​');
+    this.emitirOcultarMenu(false);
     this.menuService.cambiarMenu('buscarDocumentos');
   }
 
@@ -141,11 +176,16 @@ export class EditorComponent {
 
     const seccion = await this.secService.buscarSeccionPorId(id);
 
+    if (this.cambios) {
+      this.cambiosDeAntes = true;
+    }
+
     this.editSecForm.patchValue({
       nombre: seccion.nombre,
       numero: seccion.numero,
       contenido: seccion.contenido
     });
+    this.cambios = false;
     this.mostrarSecForm = false;
     this.mostrarEditarSec = true;
     this.idEditSec = id;
@@ -156,10 +196,49 @@ export class EditorComponent {
   }
 
   cancelarEdit() {
-    this.editSecForm.reset();
-    this.mostrarEditarSec = false;
-    this.mostrarSecForm = true;
+    if (this.cambios) {
+      if (window.confirm("Hay cambios sin confirmar, ¿desea continuar?")) {
+        this.editSecForm.reset();
+        this.mostrarEditarSec = false;
+        this.mostrarSecForm = true;
+      }
+    } else {
+      this.editSecForm.reset();
+      this.mostrarEditarSec = false;
+      this.mostrarSecForm = true;
+    }
+    if (!this.cambiosDeAntes) {
+      this.cambios = false;
+    }
   }
 
-  resetSecForm() {this.secForm.reset();}
+  async salir() {
+    if(this.cambios === true) {
+      if(window.confirm("Hay cambios sin confirmar, ¿desea continuar?")) {
+        await this.docService.modificarDocumento(this.documentoBackUp.id, this.documentoBackUp.nombre, this.documentoBackUp.secciones);
+        await this.listaSecciones.forEach(sec => {
+          this.secService.eliminarSeccionDefinitivo(sec.id);
+        });
+        this.confirmar();
+      }
+    } else {
+      this.confirmar();
+    }
+  }
+  confirmar() {
+    this.documentoBackUp = new Documento();
+    this.docForm.reset();
+    this.secForm.reset();
+    this.listaSecciones = [];
+    this.emitirOcultarMenu(false);
+    this.menuService.cambiarMenu('lobby');
+  }
+
+  resetSecForm() {
+    this.secForm.reset();
+  }
+
+  emitirOcultarMenu(valor: boolean) {
+    this.ocultarMenu.emit(valor);
+  }
 }

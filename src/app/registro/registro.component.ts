@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Perfil, Usuario } from '../entities/usuario/usuario';
 import { Subscription } from 'rxjs';
@@ -13,10 +13,13 @@ import { MenuComponent } from '../menu/menu.component';
 })
 export class RegistroComponent implements OnInit, OnDestroy {
 
+  @Output() ocultarMenu = new EventEmitter<boolean>();
+
   form: FormGroup;
   perfil = Perfil;
   usuario: string = '';
   userService: Usuario = new Usuario();
+  cambios: boolean = false;
   
   private subscriptions: Subscription = new Subscription();
 
@@ -31,7 +34,7 @@ export class RegistroComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.subscriptions.add(
       this.form.get('nombre')?.valueChanges.subscribe(() => this.updateUsuario())
     );
@@ -41,7 +44,11 @@ export class RegistroComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.form.get('dni')?.valueChanges.subscribe(() => this.updateUsuario())
     );
-    this.updateUsuario();
+
+    await this.updateUsuario();
+    setTimeout(() => {
+      this.emitirOcultarMenu(true);
+    });
   }
 
   ngOnDestroy() {
@@ -96,11 +103,27 @@ export class RegistroComponent implements OnInit, OnDestroy {
 
     const resultado = await this.userService.crearUsuario(dni, nombre, apellidos, usuario, contrasena, perfil);
     alert(resultado);
+    this.salir();
   }
 
-  resetForm() {
+  cancelar() {
+    if (this.cambios) {
+      if (window.confirm("Se cancelará la creación del usuario, ¿desea continuar?")) {
+        this.salir();
+      }
+    } else {
+      this.salir();
+    }
+  }
+
+  salir() {
     this.form.reset();
+    this.emitirOcultarMenu(false);
     this.menuService.cambiarMenu('lobby');
+  }
+
+  emitirOcultarMenu(valor: boolean) {
+    this.ocultarMenu.emit(valor);
   }
 
 }

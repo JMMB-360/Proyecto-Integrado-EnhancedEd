@@ -159,8 +159,12 @@ public class ApplicationController {
 		servicio.eliminarDocumento(id);
 	}
 	@DeleteMapping("/secciones/{id}")
-	
 	public void eliminarSeccion(@PathVariable("id") Long id){
 		servicio.eliminarSeccion(id);
 	}
+	@DeleteMapping("/secciones/eliminarDefinitivo/{id}")
+	public void eliminarSeccionDefinitivo(@PathVariable("id") Long id){
+		servicio.eliminarSeccionDefinitivo(id);
+	}
+	
 }

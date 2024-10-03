@@ -1,5 +1,5 @@
-@if (menuActual != 'login') {
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+@if (menuActual != 'login' && ocultarMenuNav != true) {
+    <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">DocBuilder</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -54,7 +54,7 @@
 <div class="menuDiv container">
     @if (menuActual === 'registro') {
         <h1 class="mt-4">Registro de usuario</h1><hr class="mb-4">
-        <app-registro></app-registro>
+        <app-registro (ocultarMenu)="ocultarMenu($event)"></app-registro>
     }
 
     @if (menuActual === 'login') {
@@ -68,16 +68,16 @@
 
     @if (menuActual === 'buscarUsuarios') {
         <h1 class="mt-4">Lista de usuarios</h1><hr class="mb-4">
-        <app-lista-usuarios></app-lista-usuarios>
+        <app-lista-usuarios (ocultarMenu)="ocultarMenu($event)"></app-lista-usuarios>
     }
 
     @if (menuActual === 'editor') {
         <h1 class="mt-4">Nuevo documento</h1><hr class="mb-4">
-        <app-editor></app-editor>
+        <app-editor (ocultarMenu)="ocultarMenu($event)"></app-editor>
     }
 
     @if (menuActual === 'buscarDocumentos') {
         <h1 class="mt-4">Lista de documentos</h1><hr class="mb-4">
-        <app-lista-documentos></app-lista-documentos>
+        <app-lista-documentos (ocultarMenu)="ocultarMenu($event)"></app-lista-documentos>
     }
 </div>
