@@ -44,6 +44,13 @@ export class RegistroComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.form.get('dni')?.valueChanges.subscribe(() => this.updateUsuario())
     );
+    setTimeout(() => {
+      this.subscriptions.add(
+        this.form.valueChanges.subscribe(() => {
+          this.cambios = true;
+        })
+      );
+    }, 1000);
 
     await this.updateUsuario();
     setTimeout(() => {

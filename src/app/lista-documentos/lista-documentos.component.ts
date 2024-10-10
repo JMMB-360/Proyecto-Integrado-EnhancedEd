@@ -4,18 +4,31 @@ import { Usuario } from '../entities/usuario/usuario';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Seccion } from '../entities/seccion/seccion';
-import { PdfService } from '../pdf-service.service';
+import { PDFgeneratorService } from '../pdfgenerator.service';
+import { QuillModule } from 'ngx-quill';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-lista-documentos',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, QuillModule],
   templateUrl: './lista-documentos.component.html',
   styleUrl: './lista-documentos.component.css'
 })
 export class ListaDocumentosComponent implements OnInit {
 
   @Output() ocultarMenu = new EventEmitter<boolean>();
+
+  toolbarOptions = [
+    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+    ['bold', 'italic', 'underline', 'strike'],
+    [{ 'color': [] }, { 'background': [] }],
+    [{ 'script': 'sub' }, { 'script': 'super' }],
+    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+    [{ 'align': [] }],
+    ['link', 'image'],
+    ['clean']
+  ];
 
   docForm: FormGroup;
   secForm: FormGroup;
@@ -43,8 +56,10 @@ export class ListaDocumentosComponent implements OnInit {
   cambiosDeAntes: boolean = false;
 
   nombreOriginal: string = "";
+  
+  private subscriptions: Subscription = new Subscription();
 
-  constructor(private formBuilder: FormBuilder, private pdfService: PdfService) {
+  constructor(private formBuilder: FormBuilder, private pdfService: PDFgeneratorService) {
     this.docForm = this.formBuilder.group({
       nombre: ['', Validators.required],
       secciones: [[]]
@@ -59,15 +74,6 @@ export class ListaDocumentosComponent implements OnInit {
       numero: [null, Validators.required],
       contenido: ['']
     });
-    this.docForm.valueChanges.subscribe(() => {
-      this.cambios = true;
-    });
-    this.secForm.valueChanges.subscribe(() => {
-      this.cambios = true;
-    });
-    this.editSecForm.valueChanges.subscribe(() => {
-      this.cambios = true;
-    });
   }
 
   async ngOnInit() {
@@ -75,9 +81,13 @@ export class ListaDocumentosComponent implements OnInit {
     this.actualizarLista();
   }
 
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
+  }
+
   async generatePdf(nombre: string) {
     const documento = await this.docService.buscarDocumentoPorNombre(nombre);
-    this.pdfService.generatePdf(documento);
+    this.pdfService.generarPDF(documento);
   }
 
   async modificarDoc() {
@@ -205,6 +215,24 @@ export class ListaDocumentosComponent implements OnInit {
     this.mostrarModificarForm = true;
     this.idEditDoc = id;
     this.cambios = false;
+
+    setTimeout(() => {
+      this.subscriptions.add(
+        this.docForm.valueChanges.subscribe(() => {
+          this.cambios = true;
+        })
+      );
+      this.subscriptions.add(
+        this.secForm.valueChanges.subscribe(() => {
+          this.cambios = true;
+        })
+      );
+      this.subscriptions.add(
+        this.editSecForm.valueChanges.subscribe(() => {
+          this.cambios = true;
+        })
+      );
+    }, 1000);
   }
 
   async mostrarModificarSec(id: number) {
@@ -221,10 +249,12 @@ export class ListaDocumentosComponent implements OnInit {
       contenido: seccion.contenido
     });
 
-    this.cambios = false;
     this.mostrarModificarForm = false;
     this.mostrarModificarSecForm = true;
     this.idEditSec = id;
+    setTimeout(() => {
+      this.cambios = false;
+    }, 10);
   }
 
   async actualizarLista() {
@@ -288,7 +318,9 @@ export class ListaDocumentosComponent implements OnInit {
       this.mostrarModificarForm = true;
     }
     if (!this.cambiosDeAntes) {
-      this.cambios = false;
+      setTimeout(() => {
+        this.cambios = false;
+      }, 10);
     }
   }
   
@@ -314,6 +346,9 @@ export class ListaDocumentosComponent implements OnInit {
     this.documentoBackUp = new Documento();
     this.mostrarModificarForm = false;
     this.emitirOcultarMenu(false);
+    this.subscriptions.unsubscribe();
+    this.subscriptions = new Subscription();
+    this.cambios = false;
     this.mostrarLista = true;
   }
 

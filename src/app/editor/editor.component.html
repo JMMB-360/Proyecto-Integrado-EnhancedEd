@@ -38,9 +38,14 @@
 
                     <div class="row mt-4">
                         <label for="contenido" class="mb-2">Contenido de la sección:</label>
-                        <textarea class="form-control" formControlName="contenido" rows="5"></textarea>
+                        <quill-editor 
+                            formControlName="contenido" 
+                            [modules]="{ toolbar: toolbarOptions }" 
+                            theme="snow"
+                            class="mb-5">
+                        </quill-editor>
         
-                        <div class="col-6 offset-6 text-end mt-3">
+                        <div class="col-6 offset-6 text-end mt-5">
                             <button class="btn btn-primary" type="submit" style="margin-right: 15px;">Añadir</button>
                             <button class="btn btn-secondary" type="button" (click)="resetSecForm()">Reiniciar</button>
                         </div>
@@ -96,9 +101,14 @@
 
                     <div class="row mt-4">
                         <label for="contenido" class="mb-2">Contenido de la sección:</label>
-                        <textarea class="form-control" formControlName="contenido" rows="5"></textarea>
+                        <quill-editor 
+                            formControlName="contenido" 
+                            [modules]="{ toolbar: toolbarOptions }" 
+                            theme="snow"
+                            class="mb-5">
+                        </quill-editor>
         
-                        <div class="col-6 offset-6 text-end mt-3">
+                        <div class="col-6 offset-6 text-end mt-5">
                             <button class="btn btn-primary" type="submit" style="margin-right: 15px;">Aplicar</button>
                             <button class="btn btn-secondary" type="button" (click)="cancelarEdit()">Cancelar</button>
                         </div>

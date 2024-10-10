@@ -37,9 +37,6 @@ export class ListaUsuariosComponent implements OnInit {
       contrasena: ['', [Validators.required, this.passwordValidator]],
       perfil: ['', Validators.required]
     });
-    this.editUserForm.valueChanges.subscribe(() => {
-      this.cambios = true;
-    });
   }
 
   async ngOnInit() {
@@ -155,7 +152,13 @@ export class ListaUsuariosComponent implements OnInit {
     } else {
       this.usuario = "root";
     }
-    this.cambios = false;
+    setTimeout(() => {
+      this.subscriptions.add(
+        this.editUserForm.valueChanges.subscribe(() => {
+          this.cambios = true;
+        })
+      );
+    }, 1000);
   }
 
   async ordenarListaUsuarios() {
@@ -187,6 +190,9 @@ export class ListaUsuariosComponent implements OnInit {
     this.editUserForm.reset();
     this.mostrarModificarForm = false;
     this.emitirOcultarMenu(false);
+    this.subscriptions.unsubscribe();
+    this.subscriptions = new Subscription();
+    this.cambios = false;
     this.mostrarLista = true;
   }
 

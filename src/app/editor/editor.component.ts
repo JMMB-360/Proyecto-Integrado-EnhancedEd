@@ -4,17 +4,30 @@ import { Usuario } from '../entities/usuario/usuario';
 import { Documento } from '../entities/documento/documento';
 import { Seccion } from '../entities/seccion/seccion';
 import { MenuComponent } from '../menu/menu.component';
+import { QuillModule } from 'ngx-quill';
+import { Subscription } from 'rxjs';
 
 @Component({
   standalone: true,
   selector: 'app-editor',
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.css'],
-  imports: [ReactiveFormsModule]
+  imports: [ReactiveFormsModule, QuillModule]
 })
 export class EditorComponent implements OnInit {
 
   @Output() ocultarMenu = new EventEmitter<boolean>();
+
+  toolbarOptions = [
+    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+    ['bold', 'italic', 'underline', 'strike'],
+    [{ 'color': [] }, { 'background': [] }],
+    [{ 'script': 'sub' }, { 'script': 'super' }],
+    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+    [{ 'align': [] }],
+    ['link', 'image'],
+    ['clean']
+  ];
   
   docForm: FormGroup;
   secForm: FormGroup;
@@ -34,6 +47,8 @@ export class EditorComponent implements OnInit {
   cambios: boolean = false;
 
   idEditSec: number = 0;
+  
+  private subscriptions: Subscription = new Subscription();
 
   constructor(private formBuilder: FormBuilder,
               private menuService: MenuComponent) {
@@ -51,18 +66,28 @@ export class EditorComponent implements OnInit {
       numero: [null, Validators.required],
       contenido: ['']
     });
-    this.secForm.valueChanges.subscribe(() => {
-      this.cambios = true;
-    });
-    this.editSecForm.valueChanges.subscribe(() => {
-      this.cambios = true;
-    });
+    setTimeout(() => {
+      this.subscriptions.add(
+        this.secForm.valueChanges.subscribe(() => {
+          this.cambios = true;
+        })
+      );
+      this.subscriptions.add(
+        this.editSecForm.valueChanges.subscribe(() => {
+          this.cambios = true;
+        })
+      );
+    }, 1000);
   }
 
   ngOnInit() {
     setTimeout(() => {
       this.emitirOcultarMenu(true);
     });
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
   }
 
   async crearDoc() {
@@ -185,10 +210,12 @@ export class EditorComponent implements OnInit {
       numero: seccion.numero,
       contenido: seccion.contenido
     });
-    this.cambios = false;
     this.mostrarSecForm = false;
     this.mostrarEditarSec = true;
     this.idEditSec = id;
+    setTimeout(() => {
+      this.cambios = false;
+    }, 10);
   }
 
   ordenarSecciones() {
@@ -208,7 +235,9 @@ export class EditorComponent implements OnInit {
       this.mostrarSecForm = true;
     }
     if (!this.cambiosDeAntes) {
-      this.cambios = false;
+      setTimeout(() => {
+        this.cambios = false;
+      }, 10);
     }
   }
 
