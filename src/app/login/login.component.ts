@@ -33,6 +33,7 @@ export class LoginComponent {
     if (resultado) {
       Usuario.setUsuarioLogueado( await this.userService.buscarUsuarioPorUser(resultado.usuario));
       alert('Login exitoso ✔️​');
+      this.menuService.ocultarMenu(false);
       this.menuService.cambiarMenu('lobby');
       if (usuario === "root") {
         alert("root solo puede gestionar usuarios, si quiere crear documentos debe crear un usuario antes ⚠️");

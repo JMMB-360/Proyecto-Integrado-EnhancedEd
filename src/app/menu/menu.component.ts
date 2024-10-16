@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { LoginComponent } from '../login/login.component';
 import { RegistroComponent } from '../registro/registro.component';
 import { ListaDocumentosComponent } from '../lista-documentos/lista-documentos.component';
@@ -10,7 +11,8 @@ import { LobbyComponent } from '../lobby/lobby.component';
 @Component({
   selector: 'app-menu',
   standalone: true,
-  imports: [LoginComponent, 
+  imports: [CommonModule,
+            LoginComponent, 
             RegistroComponent, 
             ListaDocumentosComponent, 
             ListaUsuariosComponent,
@@ -24,7 +26,7 @@ export class MenuComponent {
   userService: Usuario = new Usuario();
   logedUser: Usuario | null = new Usuario();
   menuActual: String = 'login';
-  ocultarMenuNav: boolean = false;
+  ocultarMenuNav: boolean = true;
   permisos: boolean = false;
   root: boolean = false;
   
@@ -46,6 +48,8 @@ export class MenuComponent {
     Usuario.setUsuarioLogueado(new Usuario());
     this.permisos = false;
     this.root = false;
+    this.logedUser = new Usuario();
+    this.ocultarMenu(true);
     this.cambiarMenu('login');
   }
 

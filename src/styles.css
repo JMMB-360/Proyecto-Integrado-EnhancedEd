@@ -2,6 +2,11 @@
 @import "~quill/dist/quill.core.css";
 @import "~quill/dist/quill.bubble.css";
 
+.bg {
+    background-image: url("../../assets/azulClaro.jpg");
+    background-size: cover;
+}
+
 img.avoid-break {
     page-break-inside: avoid;
 }
