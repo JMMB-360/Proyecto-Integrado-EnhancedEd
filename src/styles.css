@@ -3,7 +3,7 @@
 @import "~quill/dist/quill.bubble.css";
 
 .bg {
-    background-image: url("../../assets/azulClaro.jpg");
+    background-image: url("assets/azulClaro.jpg");
     background-size: cover;
 }
 
