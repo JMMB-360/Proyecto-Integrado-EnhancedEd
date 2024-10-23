@@ -40,7 +40,7 @@ export class ListaUsuariosComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.ordenarListaUsuarios();
+    await this.ordenarListaUsuarios();
   }
 
   ngOnDestroy() {

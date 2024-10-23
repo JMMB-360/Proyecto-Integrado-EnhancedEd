@@ -12,26 +12,31 @@
                        aria-current="page" 
                        href="#" 
                        (click)="cambiarMenu('lobby')"
-                       [ngClass]="{ 'active': menuActual === 'lobby' }">
+                       [ngClass]="{ 'activo': menuActual === 'lobby' }">
                         <i class="fa-solid fa-house bi me-2"></i> Inicio
                     </a>
                 </li>
                 @if(permisos) {
                     <li class="nav-item mb-3 dropdown dropend">
-                        <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
+                        <a class="nav-link dropdown-toggle text-white" 
+                           href="#" 
+                           role="button" 
+                           data-bs-toggle="dropdown"
+                           [ngClass]="{ 'activo': menuActual === 'registro' }"
+                           [ngClass]="{ 'activo': menuActual === 'buscarUsuarios' }">
                             <i class="fa-solid fa-users bi me-2"></i> Usuarios
                         </a>
                         <ul class="dropdown-menu dropdown-menu-dark">
                             <li>
                                 <a class="dropdown-item" 
                                    href="#" (click)="cambiarMenu('registro')" 
-                                   [ngClass]="{ 'active': menuActual === 'registro' }">
+                                   [ngClass]="{ 'activo': menuActual === 'registro' }">
                                    Registrar</a>
                             </li>
                             <li>
                                 <a class="dropdown-item" 
                                    href="#" (click)="cambiarMenu('buscarUsuarios')" 
-                                   [ngClass]="{ 'active': menuActual === 'buscarUsuarios' }">
+                                   [ngClass]="{ 'activo': menuActual === 'buscarUsuarios' }">
                                    Buscar</a>
                             </li>
                         </ul>
@@ -39,7 +44,12 @@
                 }
                 @if(!root) {
                     <li class="nav-item mb-3 dropdown dropend">
-                        <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
+                        <a class="nav-link dropdown-toggle text-white" 
+                        href="#" 
+                        role="button" 
+                        data-bs-toggle="dropdown"
+                        [ngClass]="{ 'activo': menuActual === 'editor' }"
+                        [ngClass]="{ 'activo': menuActual === 'buscarDocumentos' }">
                             <i class="fa-solid fa-file-invoice bi me-2"></i> Documentos
                         </a>
                         <ul class="dropdown-menu dropdown-menu-dark">
@@ -47,19 +57,28 @@
                                 <a class="dropdown-item" 
                                    href="#" 
                                    (click)="cambiarMenu('editor')"
-                                   [ngClass]="{ 'active': menuActual === 'editor' }">
+                                   [ngClass]="{ 'activo': menuActual === 'editor' }">
                                    Nuevo</a>
                             </li>
                             <li>
                                 <a class="dropdown-item" 
                                    href="#" 
                                    (click)="cambiarMenu('buscarDocumentos')"
-                                   [ngClass]="{ 'active': menuActual === 'buscarDocumentos' }">
+                                   [ngClass]="{ 'activo': menuActual === 'buscarDocumentos' }">
                                    Buscar</a>
                             </li>
                         </ul>
                     </li>
                 }
+                <li class="nav-item mb-3">
+                    <a class="nav-link text-white" 
+                       id="themeBtn" 
+                       aria-current="page" 
+                       (click)="cambiarTema()">
+                        <i id="themeIcon" class="fa-solid fa-moon bi me-2"></i>
+                        {{ darkMode ? 'Modo Claro' : 'Modo Oscuro' }}
+                    </a>
+                </li>
                 <li>
                     <a class="nav-link text-white" href="#" (click)="cerrarSesion()">
                         <i class="fa-solid fa-right-to-bracket bi me-2"></i> Cerrar sesión
@@ -69,7 +88,7 @@
         </div>
     }
 
-    <div class="menuDiv" [ngClass]="ocultarMenuNav ? 'col-12' : 'col-10'">
+    <div class="mainDiv" [ngClass]="ocultarMenuNav ? 'col-12' : 'col-10'">
         @if (menuActual === 'registro') {
             <h2 class="mt-3 ms-3">REGISTRO DE USUARIO</h2><hr>
             <div class="m-4">
@@ -93,7 +112,7 @@
 
         @if (menuActual === 'buscarUsuarios') {
             <h2 class="mt-3 ms-3">LISTA DE USUARIOS</h2><hr>
-            <div class="m-4">
+            <div class="m-5">
                 <app-lista-usuarios (ocultarMenu)="ocultarMenu($event)"></app-lista-usuarios>
             </div>
         }
@@ -107,7 +126,7 @@
 
         @if (menuActual === 'buscarDocumentos') {
             <h2 class="mt-3 ms-3">LISTA DE DOCUENTOS</h2><hr>
-            <div class="m-4">
+            <div class="m-5">
                 <app-lista-documentos (ocultarMenu)="ocultarMenu($event)"></app-lista-documentos>
             </div>
         }

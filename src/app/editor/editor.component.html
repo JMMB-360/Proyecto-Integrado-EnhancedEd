@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="col-8 offset-2 editorBox rounded-5 shadow bg-white">
+    <div class="col-8 offset-2 editorBox rounded-5 shadow">
         @if(mostrarDocForm) {
             <form [formGroup]="docForm" (ngSubmit)="crearDoc()">
                 <label for="documento" class="mb-2">Nombre del documento:</label>
@@ -16,7 +16,7 @@
             </form>
         }
         @if(mostrarSecForm) {
-            <form [formGroup]="docForm">
+            <form [formGroup]="docForm" class="pb-4">
                     <label for="documento" class="mb-2">Nombre del documento:</label>
                     <div class="input-group mb-3">
                         <input type="text" class="form-control" formControlName="nombre">
@@ -24,7 +24,7 @@
             </form>
             <h2>{{docForm.value.nombre}}: {{secForm.value.nombre}}</h2>
             <form [formGroup]="secForm" (ngSubmit)="anadirSec()">
-                <div class="container">
+                <div class="container p-0">
 
                     <div class="row">
                         <label for="seccion" class="mb-2">Título de la sección:</label>
@@ -54,24 +54,25 @@
                 </div>
             </form>
             <h2 class="mt-4">Secciones</h2>
-            <table class="table table-striped">
-                <thead>
+            <table class="table table-hover table2">
+                <thead class="tableHead">
                     <tr>
                         <th scope="col">Sección</th>
                         <th scope="col">Índice</th>
+                        <th scope="col"></th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="tableBody">
                     @for(seccion of listaSecciones; track seccion.id) {
                         <tr>
                             <td scope="row">{{ seccion.nombre }}</td>
                             <td scope="row">{{ seccion.numero }}</td>
                             <td scope="row" class="text-end">
                                 <button class="btn" (click)="mostrarModificar(seccion.id)">
-                                    <i class="fa-solid fa-pen editBtn" alt="Editar sección"></i>
+                                    <i class="fa-solid fa-pen tableBtn" alt="Editar sección"></i>
                                 </button>
                                 <button class="btn" (click)="eliminarSec(seccion.id, seccion.nombre)">
-                                    <i class="fa-solid fa-trash deleteBtn" alt="Eliminar sección"></i>
+                                    <i class="fa-solid fa-trash tableBtn" alt="Eliminar sección"></i>
                                 </button>
                             </td>
                         </tr>

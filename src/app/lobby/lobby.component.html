@@ -38,6 +38,12 @@
 
 <div class="row">
     <div class="col-6 offset-3 text-center" style="margin-top: 10%;">
-        <a href="https://www.iesalmudeyne.es" target="_blank"><img src="../../assets/IESA-Logo.png" class="logo" alt="IESA Logo"/></a>
+        <a href="https://www.iesalmudeyne.es" target="_blank">
+            @if(!darkMode) {
+                <img src="../../assets/IESA-Logo.png" class="logo p-3" alt="IESA Logo"/>
+            } @else {
+                <img src="../../assets/IESA-LogoLight.png" class="logo p-3" alt="IESA Logo"/>
+            }
+        </a>
     </div>
 </div>

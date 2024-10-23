@@ -109,6 +109,8 @@ export class RegistroComponent implements OnInit, OnDestroy {
     const perfil = this.form.value.perfil;
 
     const resultado = await this.userService.crearUsuario(dni, nombre, apellidos, usuario, contrasena, perfil);
+    const userId = await this.userService.buscarUsuarioPorUser(usuario);
+    await this.userService.modificarTemaUsuario(userId, 'claro');
     alert(resultado);
     this.salir();
   }

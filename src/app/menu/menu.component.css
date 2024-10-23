@@ -1,5 +1,14 @@
-.menuDiv {
+.mainDiv {
     margin-bottom: 10%;
+    color: var(--color-text);
+}
+
+.mainDiv hr {
+    border-color: var(--color-text);
+}
+
+.activo {
+    background-color: var(--color-primary);
 }
 
 i {

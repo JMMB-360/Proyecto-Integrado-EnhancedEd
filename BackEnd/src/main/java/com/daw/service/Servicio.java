@@ -131,6 +131,20 @@ public class Servicio {
             throw new Exception("El usuario no existe");
         }
     }
+	public Usuario modificarTemaUsuario(Long id, String tema) throws Exception {
+		Usuario user = userRepo.getReferenceById(id);
+        
+		if (userRepo.existsByDni(user.getDni())) {
+			
+			user.setTema(tema);
+	        
+        	userRepo.save(user);
+	        return user;
+	        
+        } else {
+            throw new Exception("El usuario no existe");
+        }
+    }
 	public Documento modificarDocumento(Long id, String nombre, List<Seccion> secciones) {
 		Documento doc = docRepo.getReferenceById(id);
 	    doc.setNombre(nombre);

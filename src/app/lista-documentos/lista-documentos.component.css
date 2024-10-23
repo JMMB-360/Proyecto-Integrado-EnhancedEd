@@ -1,24 +1,3 @@
-.deleteBtn {
-    color: rgb(227, 73, 73);
-    cursor: pointer;
-}
-.duplicateBtn {
-    color: rgb(255, 209, 42);
-    cursor: pointer;
-}
-.downloadBtn {
-    color: rgb(111, 193, 91);
-    cursor: pointer;
-}
-.editBtn {
-    color: rgb(134, 187, 239);
-    cursor: pointer;
-}
-.editorBox {
-    padding: 4%;
-    text-align: left;
-    margin-top: 10%;
-}
-button:disabled {
-    opacity: 0.3;
+.table2 .tableBody {
+    --bs-table-bg: var(--color-background2) !important;
 }

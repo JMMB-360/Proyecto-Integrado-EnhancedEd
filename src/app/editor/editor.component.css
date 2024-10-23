@@ -1,13 +1,3 @@
-.deleteBtn {
-    color: rgb(187, 39, 39);
-    cursor: pointer;
-}
-.editBtn {
-    color: rgb(134, 187, 239);
-    cursor: pointer;
-}
-.editorBox {
-    padding: 4%;
-    text-align: left;
-    margin-top: 4%;
+.table2 .tableBody {
+    --bs-table-bg: var(--color-background2) !important;
 }

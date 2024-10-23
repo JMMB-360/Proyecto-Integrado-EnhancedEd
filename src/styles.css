@@ -2,8 +2,50 @@
 @import "~quill/dist/quill.core.css";
 @import "~quill/dist/quill.bubble.css";
 
+:root {
+    --color-primary: #007bff;
+    --color-primarySelected: #005bbc;
+    --color-primarySelectedBtn: #005bbc;
+    --color-secondary: #6c757d;
+    --color-secondarySelected: #4e555b;
+    --color-secondarySelectedBtn: #4e555b;
+    --color-background: #ffffff;
+    --color-background2:#bcc8cf;
+    --color-border: #c2c2c2;
+    --color-text: #000000;
+    --bg-image: url("assets/azulClaro.jpg");
+}
+
+[data-theme="oscuro"] {
+    --color-primary: #9500ff;
+    --color-primarySelected: #e6baff;
+    --color-primarySelectedBtn: hsl(278, 100%, 72%);
+    --color-secondary: #6c757d;
+    --color-secondarySelected: #929ea9;
+    --color-secondarySelectedBtn: #929ea9;
+    --color-background: #343a40;
+    --color-background2: #1b1e21;
+    --color-border: #525b64;
+    --color-text: #f7f7f7;
+    --bg-image: url("assets/moradoOscuro.jpg");
+}
+
+[data-theme="claro"] {
+    --color-primary: #007bff;
+    --color-primarySelected: #005bbc;
+    --color-primarySelectedBtn: #005bbc;
+    --color-secondary: #6c757d;
+    --color-secondarySelected: #4e555b;
+    --color-secondarySelectedBtn: #4e555b;
+    --color-background: #ffffff;
+    --color-background2:#bcc8cf;
+    --color-border: #c2c2c2;
+    --color-text: #000000;
+    --bg-image: url("assets/azulClaro.jpg");
+}
+
 .bg {
-    background-image: url("assets/azulClaro.jpg");
+    background-image: var(--bg-image);
     background-size: cover;
 }
 
@@ -11,10 +53,85 @@ img.avoid-break {
     page-break-inside: avoid;
 }
 
+button:disabled {
+    opacity: 0.3;
+}
+
+.btn-primary {
+    --bs-btn-disabled-bg: var(--color-primary);
+    --bs-btn-disabled-border-color: var(--color-primary);
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+.btn-primary:hover {
+    background-color: var(--color-primarySelectedBtn);
+    border-color: var(--color-primarySelectedBtn);
+}
+
+.btn-secondary {
+    --bs-btn-disabled-bg: var(--color-secondary);
+    --bs-btn-disabled-border-color: var(--color-secondary);
+    background-color: var(--color-secondary);
+    border-color: var(--color-secondary);
+}
+
+.btn-secondary:hover {
+    background-color: var(--color-secondarySelectedBtn);
+    border-color: var(--color-secondarySelectedBtn);
+}
+
+.tableHead {
+    --bs-table-bg: var(--color-primary);
+    --bs-table-color: white;
+    background-color: var(--bs-table-bg);
+    border-color: var(--color-border);
+}
+
+.tableBody {
+    --bs-table-color: var(--color-text);
+    --bs-table-hover-color: var(--color-text);
+    --bs-table-bg: var(--color-background);
+    border-color: var(--color-border);
+}
+
+.tableBody tr td {
+    vertical-align: middle;
+}
+
+.tableBtn {
+    margin-left: 10px;
+    color: var(--color-primary);
+    cursor: pointer;
+    transition: filter 0.3s, color 0.3s;
+}
+.btn:hover .tableBtn {
+    color: var(--color-primarySelected);
+}
+
+.registroBox, .editorBox {
+    background-color: var(--color-background);
+    color: var(--color-text);
+    padding: 4%;
+    text-align: left;
+    margin-top: 4%;
+}
+
+.ql-container {
+    background-color: var(--color-background2);
+    border: 1px solid var(--color-border) !important;
+}
+/*!CAMBIAR EL PLACEHOLDER A ESPAÑOL*/
+.ql-editor::before {
+    color: var(--color-text) !important;
+}
+
 .ql-toolbar {
     position: -webkit-sticky;
     position: sticky;
     background-color: white;
+    border: 1px solid var(--color-border) !important;
+    color: var(--color-text) !important;
     top: 0;
     z-index: 1000;
 }

@@ -2,10 +2,14 @@
     width: 60%;
     margin-top: 40%;
     margin-bottom: 9%;
+    border-radius: 50%;
+    background-color: var(--color-background);
+    /* box-shadow: 0 0 30px 22px rgba(255, 255, 255, 0.7); */
 }
 
 .carousel {
-    border: rgb(31, 31, 31) solid 3px;
+    border: solid 2px;
+    border-color: var(--color-text);
 }
 
 .carousel-caption {

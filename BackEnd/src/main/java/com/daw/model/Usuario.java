@@ -45,6 +45,9 @@ public class Usuario {
 	@Column(name = "CONTRASENA")
 	private String contrasena;
 	
+	@Column(name = "TEMA")
+	private String tema;
+	
 	@Enumerated(EnumType.STRING)
 	@Column(name = "PERFIL", length = 20)
 	private Perfil perfil;

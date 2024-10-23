@@ -44,7 +44,7 @@ public class ApplicationController {
 	@GetMapping("/usuarios/usuario/{usuario}")
 	public ResponseEntity<Usuario> buscarUsuarioPorUser(@PathVariable("usuario") String usuario) {
 		Usuario usuarioEncontrado = servicio.buscarUsuarioPorUser(usuario);
-	    if (usuarioEncontrado == null) {
+	    if (usuarioEncontrado == null && usuario.matches(".*\\d.*")) {
 	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
 	    }
 	    return ResponseEntity.ok().body(usuarioEncontrado);
@@ -133,6 +133,11 @@ public class ApplicationController {
 															  	  	  usDTO.getUsuario(),
 															  	  	  usDTO.getContrasena(),
 															  	  	  usDTO.getPerfil()));
+	}
+	@PutMapping("/usuarios/tema/{id}/{tema}")
+	public ResponseEntity<Usuario> modificarTemaUsuario(@PathVariable("id") Long id,
+														@PathVariable("tema") String tema) throws Exception {
+		return ResponseEntity.ok().body(servicio.modificarTemaUsuario(id, tema));
 	}
 	@PutMapping("/documentos/{id}")
 	public ResponseEntity<Documento> modificarDocumento(@PathVariable("id") Long id,

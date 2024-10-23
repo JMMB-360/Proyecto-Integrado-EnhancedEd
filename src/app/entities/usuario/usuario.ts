@@ -13,18 +13,20 @@ export class Usuario {
     usuario: string;
     contrasena: string;
     perfil: Perfil;
+    tema: string;
     documentos: Documento[] = [];
 
     public static logedUser: Usuario | null;
 
     constructor(dni?: string, nombre?: string, apellidos?: string, usuario?: string,
-                contrasena?: string, perfil?: Perfil) {
+                contrasena?: string, perfil?: Perfil, tema?: string) {
         this.dni = dni ?? '';
         this.nombre = nombre ?? '';
         this.apellidos = apellidos ?? '';
         this.usuario = usuario ?? '';
         this.contrasena = contrasena ?? '';
         this.perfil = perfil ?? Perfil.ADMINISTRADOR;
+        this.tema = tema ?? '';
     }
     
     static setUsuarioLogueado(usuario: Usuario): void {
@@ -37,6 +39,12 @@ export class Usuario {
 
     static clearUsuarioLogueado(): void {
         this.logedUser = null;
+    }
+
+    static updateUsuarioTheme(tema: string): void {
+        if (this.logedUser) {
+            this.logedUser.tema = tema;
+        }
     }
 
     async buscarTodosLosUsuarios() {
@@ -73,13 +81,15 @@ export class Usuario {
         }
         try {
             const respuesta = await fetch(URL, configuracion);
-            if (!respuesta.ok) {
+            if (!respuesta.ok && usuario != "root") {
                 console.error(`Error: ${respuesta.status}`);
                 return null;
             }
             return await respuesta.json();
         } catch (error) {
-            console.error("Error en la solicitud: ", error);
+            if(usuario != "root") {
+                console.error("Error en la solicitud: ", error);
+            }
         }
     }
     
@@ -145,6 +155,20 @@ export class Usuario {
             body: JSON.stringify({ dni, nombre, apellidos, usuario, contrasena, perfil })
         }
         const respuesta = await fetch(URL, configuracion).then(respuesta => respuesta.json());
+        return respuesta;
+    }
+    
+    async modificarTemaUsuario(id: number, tema: string) {
+        const URL = `http://localhost:9999/usuarios/tema/${id}/${tema}`;
+        const configuracion = {
+            method: "PUT",
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            }
+        }
+        const respuesta = await fetch(URL, configuracion);
+        Usuario.updateUsuarioTheme(tema);console.log('cambiar: ' + tema);
         return respuesta;
     }
 

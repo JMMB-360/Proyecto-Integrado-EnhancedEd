@@ -1,15 +1,16 @@
 @if(mostrarLista) {
-    <table class="table table-striped">
-        <thead>
+    <table class="table table-hover">
+        <thead class="tableHead">
             <tr>
                 <th scope="col">DNI</th>
                 <th scope="col">Nombre</th>
                 <th scope="col">Apellidos</th>
                 <th scope="col">Usuario</th>
                 <th scope="col">Perfil</th>
+                <th scope="col"></th>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="tableBody">
             @for (usuario of listaUsuario; track usuario.id) {
                 <tr>
                     <td scope="row">{{usuario.dni}}</td>
@@ -19,10 +20,10 @@
                     <td scope="row">{{usuario.perfil}}</td>
                     <td scope="row" class="text-end">
                         <button class="btn" (click)="mostrarModificar(usuario.id, usuario.usuario)" style="margin-right: 10px;">
-                            <i class="fa-solid fa-pen editBtn" alt="Editar sección"></i>
+                            <i class="fa-solid fa-pen tableBtn" alt="Editar sección"></i>
                         </button>
                         <button class="btn" (click)="eliminar(usuario.id, usuario.nombre, usuario.apellidos)">
-                            <i class="fa-solid fa-trash deleteBtn" alt="Eliminar sección"></i>
+                            <i class="fa-solid fa-trash tableBtn" alt="Eliminar sección"></i>
                         </button>
                     </td>
                 </tr>
@@ -32,7 +33,7 @@
 }
 @if(mostrarModificarForm) {
     <div class="row">
-        <div class="col-6 offset-3 registroBox rounded-5 shadow bg-white">
+        <div class="col-6 offset-3 registroBox rounded-5 shadow">
             <form [formGroup]="editUserForm" (ngSubmit)="modificar(idEditUser)">
 
                 <div class="row">

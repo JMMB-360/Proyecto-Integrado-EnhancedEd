@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Perfil, Usuario } from '../entities/usuario/usuario';
 import { MenuComponent } from '../menu/menu.component';
+import { ThemeService } from '../theme.service';
 
 @Component({
   standalone: true,
@@ -17,7 +18,8 @@ export class LoginComponent {
   userService: Usuario = new Usuario();
 
   constructor(private formBuilder: FormBuilder,
-              private menuService: MenuComponent) {
+              private menuService: MenuComponent,
+              private themeService: ThemeService) {
     this.form = this.formBuilder.group({
       usuario: ['', Validators.required],
       contrasena: ['', Validators.required]
@@ -32,7 +34,9 @@ export class LoginComponent {
 
     if (resultado) {
       Usuario.setUsuarioLogueado( await this.userService.buscarUsuarioPorUser(resultado.usuario));
+      await this.menuService.iniciarSesion();
       alert('Login exitoso ✔️​');
+      await this.themeService.aplicarTema();
       this.menuService.ocultarMenu(false);
       this.menuService.cambiarMenu('lobby');
       if (usuario === "root") {
@@ -47,6 +51,8 @@ export class LoginComponent {
     let resultado = await this.userService.buscarUsuarioPorUser("root");
     if (!resultado) {
       await this.userService.crearUsuario("11111111A","root","","root","root", Perfil.ADMINISTRADOR);
+      const rootUser = await this.userService.buscarUsuarioPorUser("root");
+      await this.userService.modificarTemaUsuario(rootUser.id, "claro");
     }
   }
 

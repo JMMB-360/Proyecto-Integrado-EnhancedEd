@@ -260,7 +260,7 @@ export class EditorComponent implements OnInit {
     this.secForm.reset();
     this.listaSecciones = [];
     this.emitirOcultarMenu(false);
-    this.menuService.cambiarMenu('buscarDocumentos');
+    this.menuService.cambiarMenu('lobby');
   }
 
   resetSecForm() {
