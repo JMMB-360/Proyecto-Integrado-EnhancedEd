@@ -18,4 +18,5 @@ i {
 
 .nav-link:hover {
     background-color: rgb(119, 119, 119);
+    cursor: pointer;
 }

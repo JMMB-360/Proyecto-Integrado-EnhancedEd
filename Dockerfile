@@ -19,11 +19,11 @@ RUN npm run build --prod
 # Fase de ejecución
 FROM nginx:alpine
 
-# Copia los archivos compilados desde la fase de compilación a Nginx
+# Copia los archivos recién compilados del proyecto a Nginx
 COPY --from=build /app/dist/proyecto /usr/share/nginx/html
 
-# Copia el archivo de configuración de Nginx personalizado
-COPY nginx.conf /etc/nginx/nginx.conf
+# Copia el archivo de configuración de Nginx personalizado (opcional)
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Expone el puerto que utiliza Nginx
 EXPOSE 80

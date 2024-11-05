@@ -72,14 +72,12 @@ export class Documento {
             const respuesta = await fetch(URL, configuracion).then(respuesta => respuesta.json());
             if(mensajes) {
                 if (respuesta && respuesta.error) {
-                    alert("El nombre ya está en uso ❌");
-                    return false;
+                    return 'ECode03';
                 } else if (respuesta && respuesta.id) {
-                    alert("Documento creado correctamente ✔️");
-                    return true;
+                    return 'OK';
                 } else {
                     console.log("Error: Respuesta inesperada del servidor ❌: "+ respuesta);
-                    return false;
+                    return 'ECode02';
                 }
             } else {
                 return respuesta.id ? true : false;

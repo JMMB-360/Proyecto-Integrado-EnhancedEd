@@ -7,6 +7,8 @@ import { Seccion } from '../entities/seccion/seccion';
 import { PDFgeneratorService } from '../pdfgenerator.service';
 import { QuillModule } from 'ngx-quill';
 import { Subscription } from 'rxjs';
+import { AlertService } from '../alert.service';
+import { ConfirmService } from '../confirm.service';
 
 @Component({
   selector: 'app-lista-documentos',
@@ -59,7 +61,10 @@ export class ListaDocumentosComponent implements OnInit {
   
   private subscriptions: Subscription = new Subscription();
 
-  constructor(private formBuilder: FormBuilder, private pdfService: PDFgeneratorService) {
+  constructor(private formBuilder: FormBuilder, 
+              private pdfService: PDFgeneratorService, 
+              private alertService: AlertService,
+              private confirmService: ConfirmService) {
     this.docForm = this.formBuilder.group({
       nombre: ['', Validators.required],
       secciones: [[]]
@@ -99,7 +104,7 @@ export class ListaDocumentosComponent implements OnInit {
         this.listaDocumentos[index].nombre = this.docForm.value.nombre;
       }
     } else {
-      alert('El documento debe tener un nombre ❌');
+      this.alertService.showAlert('danger', 'El documento debe tener un nombre ❌');
     }
   }
 
@@ -117,18 +122,24 @@ export class ListaDocumentosComponent implements OnInit {
       });
       
       if(numeroRepetido) {
-        alert('El número de la sección ya está en uso ❌');
+        this.alertService.showAlert('danger', 'El número de la sección ya está en uso ❌');
       } else if(numero === null || numero === '') {
-        alert('La sección debe tener un número ❌');
+        this.alertService.showAlert('danger', 'La sección debe tener un número ❌');
       } else {
-        let seccionNueva = await this.secService.crearSeccion(nombre, numero, contenido, this.documentoMod.id);
-        this.listaSecciones.push(seccionNueva);
-        this.seccionesNuevas.push(seccionNueva);
-        this.ordenarSecciones();
-        this.secForm.reset();
+        const seccionNueva = await this.secService.crearSeccion(nombre, numero, contenido, this.documentoMod.id);
+        if(seccionNueva.nombre) {
+          this.listaSecciones.push(seccionNueva);
+          this.seccionesNuevas.push(seccionNueva);
+          this.ordenarSecciones();
+          this.secForm.reset();
+        } else if(seccionNueva === 'ECode04') {
+          this.alertService.showAlert('danger', 'El título ya está en uso ❌');
+        } else if(seccionNueva === 'ECode02') {
+          this.alertService.showAlert('danger', 'Error: Respuesta inesperada del servidor ❌');
+        }
       }
     } else {
-      alert('La sección debe tener un título ❌');
+      this.alertService.showAlert('danger', 'La sección debe tener un título ❌');
     }
   }
 
@@ -149,46 +160,56 @@ export class ListaDocumentosComponent implements OnInit {
         }
       });
       if(numeroRepetido) {
-        alert('El número de la sección ya está en uso ❌');
+        this.alertService.showAlert('danger', 'El número de la sección ya está en uso ❌');
       } else {
-        this.listaSecciones.push(await this.secService.modificarSeccion(id, nombre, numero, contenido));
-        this.editSecForm.reset();
-        this.mostrarModificarSecForm = false;
-        this.mostrarModificarForm = true;
+        const respuesta = await this.secService.modificarSeccion(id, nombre, numero, contenido);
+        if(respuesta.nombre) {
+          this.listaSecciones.push(respuesta);
+          this.editSecForm.reset();
+          this.mostrarModificarSecForm = false;
+          this.mostrarModificarForm = true;
+        } else if(respuesta === 'ECode04') {
+          this.alertService.showAlert('danger', 'El título ya está en uso ❌');
+        } else if(respuesta === 'ECode02') {
+          this.alertService.showAlert('danger', 'Error: Respuesta inesperada del servidor ❌');
+        }
       }
     } else {
-      alert('La sección debe tener un título ❌');
+      this.alertService.showAlert('danger', 'La sección debe tener un título ❌');
     }
     this.ordenarSecciones();
   }
 
-  eliminarDoc(id: number, nombre: string) {
-    if(window.confirm("¿Desea eliminar este documento?: "+ nombre)) {
+  async eliminarDoc(id: number, nombre: string) {
+    const confirmacion = await this.confirmService.ask('Eliminar documento', '¿Desea eliminar este documento?: '+ nombre);
+    if(confirmacion) {
       this.docService.eliminarDocumento(id);
       const index = this.listaDocumentos.findIndex(sec => sec.id === id);
       if (index !== -1) {
         this.listaDocumentos.splice(index, 1);
       }
-      alert('Documento eliminado ✔️​');
+      this.alertService.showAlert('success', 'Documento eliminado ✔️');
     }
   }
 
   async eliminarSec(id: number, nombre: string) {
-    if(window.confirm("¿Desea eliminar esta sección?: "+ nombre)) {
+    const confirmacion = await this.confirmService.ask('Eliminar sección', '¿Desea eliminar esta sección?: '+ nombre);
+    if(confirmacion) {
       this.secService.eliminarSeccion(id);
       const index = this.listaSecciones.findIndex(sec => sec.id === id);
       if (index !== -1) {
         this.listaSecciones.splice(index, 1);
       }
-      alert('Sección eliminada ✔️​');
+      this.alertService.showAlert('success', 'Sección eliminada ✔️');
     }
   }
 
-  aplicarCambios() {
+  async aplicarCambios() {
     if(this.secForm.value.nombre === "" || this.secForm.value.nombre === null && this.secForm.value.contenido === "" || this.secForm.value.contenido === null) {
       this.continuar();
     } else {
-      if(window.confirm("Hay una sección sin guardar, ¿desea continuar?")) {
+      const confirmacion = await this.confirmService.ask('Aplicar cambios', 'Hay una sección sin guardar y no se aplicará, ¿desea continuar?');
+      if(confirmacion) {
         this.continuar();
       }
     }
@@ -196,7 +217,7 @@ export class ListaDocumentosComponent implements OnInit {
   async continuar() {
     await this.modificarDoc();
     await this.actualizarLista();
-    alert('Cambios aplicados ✔️​');
+    this.alertService.showAlert('success', 'Cambios aplicados ✔️');
     this.salir();
   }
 
@@ -272,8 +293,9 @@ export class ListaDocumentosComponent implements OnInit {
     this.listaSecciones.sort((sec1, sec2) => sec1.numero - sec2.numero);
   }
 
-  resetSecForm() {
-    if (window.confirm("¿Deseas reiniciar la sección?")) {
+  async resetSecForm() {
+    const confirmacion = await this.confirmService.ask('Reiniciar sección', '¿Deseas reiniciar la sección? Se perderá todo el trabajo realizado');
+    if (confirmacion) {
       this.secForm.reset();
     }
   }
@@ -305,9 +327,10 @@ export class ListaDocumentosComponent implements OnInit {
     await this.actualizarLista();
   }
 
-  cancelarSecEdit() {
+  async cancelarSecEdit() {
     if (this.cambios) {
-      if (window.confirm("Hay cambios sin confirmar, ¿desea continuar?")) {
+      const confirmacion = await this.confirmService.ask('Cancelar modificación', 'Hay cambios sin confirmar y se perderán, ¿desea continuar?');
+      if (confirmacion) {
         this.editSecForm.reset();
         this.mostrarModificarSecForm = false;
         this.mostrarModificarForm = true;
@@ -326,7 +349,8 @@ export class ListaDocumentosComponent implements OnInit {
   
   async cancelarCambios() {
     if(this.cambios === true) {
-      if(window.confirm("Hay cambios sin confirmar, ¿desea continuar?")) {
+      const confirmacion = await this.confirmService.ask('Cancelar modificación', 'Hay cambios sin confirmar y se perderán, ¿desea continuar?');
+      if(confirmacion) {
         await this.docService.modificarDocumento(this.documentoBackUp.id, this.documentoBackUp.nombre, this.documentoBackUp.secciones);
         await this.seccionesNuevas.forEach(sec => {
           this.secService.eliminarSeccionDefinitivo(sec.id);

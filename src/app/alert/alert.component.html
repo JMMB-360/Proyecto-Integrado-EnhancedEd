@@ -1,0 +1,7 @@
+@if(alert) {
+    <div class="alert alert-{{ alert.type }} alert-dismissible fade show" role="alert"
+        [ngClass]="{'longTime': alert.longTime}">
+        <span>{{ alert.message }}</span>
+        <button type="button" class="btn-close" (click)="closeAlert()" aria-label="Close"></button>
+    </div>
+}

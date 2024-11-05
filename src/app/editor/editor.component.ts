@@ -6,6 +6,8 @@ import { Seccion } from '../entities/seccion/seccion';
 import { MenuComponent } from '../menu/menu.component';
 import { QuillModule } from 'ngx-quill';
 import { Subscription } from 'rxjs';
+import { AlertService } from '../alert.service';
+import { ConfirmService } from '../confirm.service';
 
 @Component({
   standalone: true,
@@ -51,7 +53,9 @@ export class EditorComponent implements OnInit {
   private subscriptions: Subscription = new Subscription();
 
   constructor(private formBuilder: FormBuilder,
-              private menuService: MenuComponent) {
+              private menuService: MenuComponent,
+              private alertService: AlertService,
+              private confirmService: ConfirmService) {
     this.docForm = this.formBuilder.group({
       nombre: ['', Validators.required],
       secciones: [[]]
@@ -97,9 +101,10 @@ export class EditorComponent implements OnInit {
 
     if(nombre != '' && nombre != null) {
       let newDocumento = await this.docService.crearDocumento(nombre, secciones, userId, true);
-      if (newDocumento) {
+      if (newDocumento === 'OK') {
         this.mostrarDocForm = false;
         this.mostrarSecForm = true;
+        this.alertService.showAlert('success', 'Documento creado ✔️');
         this.documento = await this.docService.buscarDocumentoPorNombre(this.docForm.value.nombre);
         this.documentoBackUp = JSON.parse(JSON.stringify(this.documento));
         this.cambios = false;
@@ -107,9 +112,13 @@ export class EditorComponent implements OnInit {
         this.docForm.valueChanges.subscribe(() => {
           this.cambios = true;
         });
+      } else if(newDocumento === 'ECode03') {
+        this.alertService.showAlert('danger', 'El nombre '+ nombre +' ya está en uso ❌');
+      } else {
+        this.alertService.showAlert('danger', 'Error: Respuesta inesperada del servidor ❌');
       }
     } else {
-      alert('El documento debe tener un nombre ❌');
+      this.alertService.showAlert('danger', 'El documento debe tener un nombre ❌');
     }
   }
 
@@ -117,7 +126,7 @@ export class EditorComponent implements OnInit {
     if(this.docForm.value.nombre != '' || this.docForm.value.nombre != null) {
       await this.docService.modificarDocumento(this.documento.id, this.docForm.value.nombre, this.documento.secciones);
     } else {
-      alert('El documento debe tener un nombre ❌');
+      this.alertService.showAlert('danger', 'El documento debe tener un nombre ❌');
     }
   }
 
@@ -135,16 +144,23 @@ export class EditorComponent implements OnInit {
       });
       
       if(numeroRepetido) {
-        alert('El número de la sección ya está en uso ❌');
+        this.alertService.showAlert('danger', 'El número de la sección ya está en uso ❌');
       } else if(numero === null || numero === '') {
-        alert('La sección debe tener un número ❌');
+        this.alertService.showAlert('danger', 'La sección debe tener un número ❌');
       } else {
-        this.listaSecciones.push(await this.secService.crearSeccion(nombre, numero, contenido, this.documento.id));
-        this.ordenarSecciones();
-        this.secForm.reset();
+        const respuesta = await this.secService.crearSeccion(nombre, numero, contenido, this.documento.id);
+        if(respuesta.nombre) {
+          this.listaSecciones.push(respuesta);
+          this.ordenarSecciones();
+          this.secForm.reset();
+        } else if(respuesta === 'ECode04') {
+          this.alertService.showAlert('danger', 'El título ya está en uso ❌');
+        } else if(respuesta === 'ECode02') {
+          this.alertService.showAlert('danger', 'Error: Respuesta inesperada del servidor ❌');
+        }
       }
     } else {
-      alert('La sección debe tener un título ❌');
+      this.alertService.showAlert('danger', 'La sección debe tener un título ❌');
     }
   }
 
@@ -165,36 +181,44 @@ export class EditorComponent implements OnInit {
         }
       });
       if(numeroRepetido) {
-        alert('El número de la sección ya está en uso ❌');
+        this.alertService.showAlert('danger', 'El número de la sección ya está en uso ❌');
       } else {
-        this.listaSecciones.push(await this.secService.modificarSeccion(id, nombre, numero, contenido));
-        this.ordenarSecciones();
-        this.editSecForm.reset();
-        this.mostrarEditarSec = false;
-        this.mostrarSecForm = true;
+        const respuesta = await this.secService.modificarSeccion(id, nombre, numero, contenido);
+        if(respuesta.nombre) {
+          this.listaSecciones.push(respuesta);
+          this.ordenarSecciones();
+          this.editSecForm.reset();
+          this.mostrarEditarSec = false;
+          this.mostrarSecForm = true;
+        } else if(respuesta === 'ECode04') {
+          this.alertService.showAlert('danger', 'El título ya está en uso ❌');
+        } else if(respuesta === 'ECode02') {
+          this.alertService.showAlert('danger', 'Error: Respuesta inesperada del servidor ❌');
+        }
       }
     } else {
-      alert('La sección debe tener un título ❌');
+      this.alertService.showAlert('danger', 'La sección debe tener un título ❌');
     }
     this.ordenarSecciones();
   }
 
   async eliminarSec(id: number, nombre: string) {
-    if(window.confirm("¿Desea eliminar esta sección?: "+ nombre)) {
+    const confirmacion = await this.confirmService.ask('Eliminar sección', '¿Desea eliminar esta sección?: '+ nombre);
+    if(confirmacion) {
       this.secService.eliminarSeccion(id);
       const index = this.listaSecciones.findIndex(sec => sec.id === id);
       if (index !== -1) {
         this.listaSecciones.splice(index, 1);
       }
-      alert('Sección eliminada ✔️​');
+      this.alertService.showAlert('success', 'Sección eliminada ✔️');
     }
   }
 
   aplicar() {
     this.docService.modificarDocumento(this.documento.id, this.docForm.value.nombre, this.listaSecciones);
-    alert('Secciones aplicadas ✔️​');
+    this.alertService.showAlert('success', 'Secciones aplicadas ✔️');
     this.emitirOcultarMenu(false);
-    this.menuService.cambiarMenu('buscarDocumentos');
+    this.menuService.cambiarMenu('lobby');
   }
 
   async mostrarModificar(id: number) {
@@ -222,9 +246,10 @@ export class EditorComponent implements OnInit {
     this.listaSecciones.sort((sec1, sec2) => sec1.numero - sec2.numero);
   }
 
-  cancelarEdit() {
+  async cancelarEdit() {
     if (this.cambios) {
-      if (window.confirm("Hay cambios sin confirmar, ¿desea continuar?")) {
+      const confirmacion = await this.confirmService.ask('Cancelar modificación', 'Hay cambios sin confirmar y se perderán, ¿desea continuar?');
+      if (confirmacion) {
         this.editSecForm.reset();
         this.mostrarEditarSec = false;
         this.mostrarSecForm = true;
@@ -243,7 +268,8 @@ export class EditorComponent implements OnInit {
 
   async salir() {
     if(this.cambios === true) {
-      if(window.confirm("Hay cambios sin confirmar, ¿desea continuar?")) {
+      const confirmacion = await this.confirmService.ask('Salir', 'Hay cambios sin confirmar y se perderán, ¿desea continuar?');
+      if(confirmacion) {
         await this.docService.modificarDocumento(this.documentoBackUp.id, this.documentoBackUp.nombre, this.documentoBackUp.secciones);
         await this.listaSecciones.forEach(sec => {
           this.secService.eliminarSeccionDefinitivo(sec.id);

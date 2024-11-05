@@ -131,12 +131,12 @@ export class Usuario {
         try {
             const respuesta = await fetch(URL, configuracion).then(respuesta => respuesta.json());
             if (respuesta && respuesta.error) {
-                return "El DNI ya existe ❌";
+                return 'ECode01';
               } else if (respuesta && respuesta.usuario) {
-                return "Usuario creado correctamente ✔️";
+                return 'OK';
               } else {
                 console.log(respuesta);
-                return "Error: Respuesta inesperada del servidor ❌";
+                return 'ECode02';
               }
         } catch (error) {
             console.error("Error al crear usuario:", error);
@@ -168,7 +168,7 @@ export class Usuario {
             }
         }
         const respuesta = await fetch(URL, configuracion);
-        Usuario.updateUsuarioTheme(tema);console.log('cambiar: ' + tema);
+        Usuario.updateUsuarioTheme(tema);
         return respuesta;
     }
 

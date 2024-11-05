@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, FormsModule, Validators, ReactiveFormsModule } 
 import { Perfil, Usuario } from '../entities/usuario/usuario';
 import { MenuComponent } from '../menu/menu.component';
 import { ThemeService } from '../theme.service';
+import { AlertService } from '../alert.service';
 
 @Component({
   standalone: true,
@@ -19,7 +20,8 @@ export class LoginComponent {
 
   constructor(private formBuilder: FormBuilder,
               private menuService: MenuComponent,
-              private themeService: ThemeService) {
+              private themeService: ThemeService,
+              private alertService: AlertService) {
     this.form = this.formBuilder.group({
       usuario: ['', Validators.required],
       contrasena: ['', Validators.required]
@@ -35,15 +37,16 @@ export class LoginComponent {
     if (resultado) {
       Usuario.setUsuarioLogueado( await this.userService.buscarUsuarioPorUser(resultado.usuario));
       await this.menuService.iniciarSesion();
-      alert('Login exitoso ✔️​');
       await this.themeService.aplicarTema();
       this.menuService.ocultarMenu(false);
-      this.menuService.cambiarMenu('lobby');
       if (usuario === "root") {
-        alert("root solo puede gestionar usuarios, si quiere crear documentos debe crear un usuario antes ⚠️");
+        this.alertService.showAlert('warning', 'root solo puede gestionar usuarios, si quiere crear documentos debe logearse con un usuario normal ⚠️', true);
+      } else {
+        this.alertService.showAlert('success', 'Login exitoso ✔️');
       }
+      this.menuService.cambiarMenu('lobby');
     } else {
-      alert('Los datos no coinciden ❌');
+      this.alertService.showAlert('danger', 'Los datos no coinciden ❌');
     }
   }
 

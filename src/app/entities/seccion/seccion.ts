@@ -49,12 +49,12 @@ export class Seccion {
         try {
             const respuesta = await fetch(URL, configuracion).then(respuesta => respuesta.json());
             if (respuesta && respuesta.error) {
-                alert("El título ya está en uso ❌");
+                return 'ECode04';
             } else if (respuesta && respuesta.nombre) {
                 return respuesta;
             } else {
                 console.log(respuesta);
-                alert("Error: Respuesta inesperada del servidor ❌");
+                return 'ECode02';
             }
         } catch (error) {
             console.error("Error al crear sección:", error);
@@ -76,13 +76,13 @@ export class Seccion {
             const respuesta = await fetch(URL, configuracion).then(respuesta => respuesta.json());
             
             if (respuesta && respuesta.error) {
-                alert("El título ya está en uso ❌");
+                return 'ECode04';
             } else if (respuesta && respuesta.id) {
                 alert("Sección modificada correctamente ✔️");
                 return respuesta;
             } else {
                 console.log(respuesta);
-                alert("Error: Respuesta inesperada del servidor ❌");
+                return 'ECode02';
             }
         } catch (error) {
             console.error("Error al crear sección:", error);

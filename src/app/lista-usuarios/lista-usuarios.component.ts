@@ -3,6 +3,8 @@ import { Usuario } from '../entities/usuario/usuario';
 import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
+import { AlertService } from '../alert.service';
+import { ConfirmService } from '../confirm.service';
 
 @Component({
   selector: 'app-lista-usuarios',
@@ -28,7 +30,9 @@ export class ListaUsuariosComponent implements OnInit {
 
   private subscriptions: Subscription = new Subscription();
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(private formBuilder: FormBuilder, 
+              private alertService: AlertService, 
+              private confirmService: ConfirmService) {
     this.editUserForm = this.formBuilder.group({
       dni: ['', [Validators.required, this.dniValidator]],
       nombre: ['', Validators.required],
@@ -50,12 +54,13 @@ export class ListaUsuariosComponent implements OnInit {
   async modificar(id: number) {
     if (this.editUserForm.invalid) {
       if (this.editUserForm.get('dni')?.hasError('required') || this.editUserForm.get('dni')?.hasError('invalidDni')) {
-        alert('DNI incorrecto ❌');
-      } else
-      if (this.editUserForm.get('contrasena')?.hasError('required') || this.editUserForm.get('contrasena')?.hasError('invalidPassword')) {
-        alert('La contraseña debe contener al menos 8 caracteres, una letra minúscula, una letra mayúscula, un número y un carácter especial ❌');
+        this.alertService.showAlert('danger', 'El DNI no tiene el formato correcto (8 dígitos y una letra) ❌');
+
+      } else if (this.editUserForm.get('contrasena')?.hasError('required') || this.editUserForm.get('contrasena')?.hasError('invalidPassword')) {
+        this.alertService.showAlert('danger', 'La contraseña debe contener al menos 8 caracteres, una letra minúscula y una mayúscula, un número y un carácter especial ❌', true);
+      
       } else {
-        alert('Faltan campos por rellenar ❌');
+        this.alertService.showAlert('danger', 'Faltan campos por rellenar ❌');//todo: Decir qué campos y marcarlos
       }
       return;
     }
@@ -76,7 +81,7 @@ export class ListaUsuariosComponent implements OnInit {
       this.listaUsuario[index].perfil = this.editUserForm.value.perfil;
     }
     await this.ordenarListaUsuarios();
-    alert("Usuario modificado correctamente ✔️");
+    this.alertService.showAlert('success', 'Usuario modificado correctamente ✔️');
     this.editUserForm.reset();
     this.emitirOcultarMenu(false);
     this.mostrarModificarForm = false;
@@ -84,13 +89,14 @@ export class ListaUsuariosComponent implements OnInit {
   }
 
   async eliminar(id: number, nombre: string, apellidos: string) {
-    if(window.confirm("¿Desea eliminar este usuario?: "+ nombre + " " + apellidos)) {
+    const confirmacion = await this.confirmService.ask('Eliminar usuario', '¿Desea eliminar este usuario?: '+ nombre + ' ' + apellidos);
+    if(confirmacion) {
       this.userService.eliminarUsuario(id);
       const index = this.listaUsuario.findIndex(sec => sec.id === id);
       if (index !== -1) {
         this.listaUsuario.splice(index, 1);
       }
-      alert('Usuario eliminado ✔️​');
+      this.alertService.showAlert('success', 'Usuario eliminado ✔️');
     }
   }
 
@@ -176,9 +182,10 @@ export class ListaUsuariosComponent implements OnInit {
     }
   }
 
-  cancelarEdit() {
+  async cancelarEdit() {
     if (this.cambios) {
-      if (window.confirm("Hay cambios sin confirmar, ¿desea continuar?")) {
+      const confirmacion = await this.confirmService.ask('Cancelar cambios', 'Hay cambios sin confirmar que serán descartados, ¿desea continuar?');
+      if (confirmacion) {
         this.salir();
       }
     } else {

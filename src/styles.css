@@ -4,13 +4,13 @@
 
 :root {
     --color-primary: #007bff;
-    --color-primarySelected: #005bbc;
-    --color-primarySelectedBtn: #005bbc;
+    --color-primarySelected: #0065d0;
+    --color-primarySelectedBtn: #0065d0;
     --color-secondary: #6c757d;
     --color-secondarySelected: #4e555b;
     --color-secondarySelectedBtn: #4e555b;
     --color-background: #ffffff;
-    --color-background2:#bcc8cf;
+    --color-background2:#eff4ff;
     --color-border: #c2c2c2;
     --color-text: #000000;
     --bg-image: url("assets/azulClaro.jpg");
@@ -32,13 +32,13 @@
 
 [data-theme="claro"] {
     --color-primary: #007bff;
-    --color-primarySelected: #005bbc;
-    --color-primarySelectedBtn: #005bbc;
+    --color-primarySelected: #0065d0;
+    --color-primarySelectedBtn: #0065d0;
     --color-secondary: #6c757d;
     --color-secondarySelected: #4e555b;
     --color-secondarySelectedBtn: #4e555b;
     --color-background: #ffffff;
-    --color-background2:#bcc8cf;
+    --color-background2:#eff4ff;
     --color-border: #c2c2c2;
     --color-text: #000000;
     --bg-image: url("assets/azulClaro.jpg");

@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Build-Jdk-Spec: 21
-Implementation-Title: ActividadPaginacion
-Implementation-Version: 0.0.1-SNAPSHOT
+Implementation-Title: BackEnd
+Implementation-Version: 1.2
 Created-By: Maven Integration for Eclipse
 

@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractContro
 import { Perfil, Usuario } from '../entities/usuario/usuario';
 import { Subscription } from 'rxjs';
 import { MenuComponent } from '../menu/menu.component';
+import { AlertService } from '../alert.service';
+import { ConfirmService } from '../confirm.service';
 
 @Component({
   selector: 'app-registro',
@@ -23,7 +25,10 @@ export class RegistroComponent implements OnInit, OnDestroy {
   
   private subscriptions: Subscription = new Subscription();
 
-  constructor(private formBuilder: FormBuilder, private menuService: MenuComponent) {
+  constructor(private formBuilder: FormBuilder, 
+              private menuService: MenuComponent,
+              private alertService: AlertService,
+              private confirmService: ConfirmService) {
     this.form = this.formBuilder.group({
       dni: ['', [Validators.required, this.dniValidator]],
       nombre: ['', Validators.required],
@@ -92,12 +97,12 @@ export class RegistroComponent implements OnInit, OnDestroy {
   async crear() {
     if (this.form.invalid) {
       if (this.form.get('dni')?.hasError('required') || this.form.get('dni')?.hasError('invalidDni')) {
-        alert('DNI incorrecto ❌');
+        this.alertService.showAlert('danger', 'El DNI no tiene el formato correcto (8 dígitos y una letra) ❌');
       } else
       if (this.form.get('contrasena')?.hasError('required') || this.form.get('contrasena')?.hasError('invalidPassword')) {
-        alert('La contraseña debe contener al menos 8 caracteres, una letra minúscula, una letra mayúscula, un número y un carácter especial ❌');
+        this.alertService.showAlert('danger', 'La contraseña debe contener al menos 8 caracteres, una letra minúscula, una letra mayúscula, un número y un carácter especial ❌', true);
       } else {
-        alert('Faltan campos por rellenar ❌');
+        this.alertService.showAlert('danger', 'Faltan campos por rellenar ❌');
       }
       return;
     }
@@ -108,16 +113,25 @@ export class RegistroComponent implements OnInit, OnDestroy {
     const contrasena = this.form.value.contrasena;
     const perfil = this.form.value.perfil;
 
-    const resultado = await this.userService.crearUsuario(dni, nombre, apellidos, usuario, contrasena, perfil);
+    const respuesta = await this.userService.crearUsuario(dni, nombre, apellidos, usuario, contrasena, perfil);
+    if(respuesta === 'ECode01') {
+      this.alertService.showAlert('danger', 'El DNI ya existe ❌');
+      return;
+    } else if(respuesta === 'OK') {
+      this.alertService.showAlert('success', 'Usuario creado correctamente ✔️');
+    } else if(respuesta === 'ECode02') {
+      this.alertService.showAlert('danger', 'Error: Respuesta inesperada del servidor ❌');
+      return;
+    }
     const userId = await this.userService.buscarUsuarioPorUser(usuario);
-    await this.userService.modificarTemaUsuario(userId, 'claro');
-    alert(resultado);
+    await this.userService.modificarTemaUsuario(userId.id, 'claro');
     this.salir();
   }
 
-  cancelar() {
+  async cancelar() {
     if (this.cambios) {
-      if (window.confirm("Se cancelará la creación del usuario, ¿desea continuar?")) {
+      const confirmacion = await this.confirmService.ask('Cancelar registro', 'Se cancelará el registro del usuario, ¿Desea continuar?');
+      if (confirmacion) {
         this.salir();
       }
     } else {

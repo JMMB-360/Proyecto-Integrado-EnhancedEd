@@ -70,15 +70,27 @@
                         </ul>
                     </li>
                 }
-                <li class="nav-item mb-3">
-                    <a class="nav-link text-white" 
-                       id="themeBtn" 
-                       aria-current="page" 
-                       (click)="cambiarTema()">
-                        <i id="themeIcon" class="fa-solid fa-moon bi me-2"></i>
-                        {{ darkMode ? 'Modo Claro' : 'Modo Oscuro' }}
-                    </a>
-                </li>
+                @if(darkMode) {
+                    <li class="nav-item mb-3">
+                        <a class="nav-link text-white" 
+                           id="themeBtn" 
+                           aria-current="page" 
+                           (click)="cambiarTema()">
+                            <i id="themeIcon" class="fa-solid fa-sun bi me-2"></i>
+                            Modo Claro
+                        </a>
+                    </li>
+                } @else {
+                    <li class="nav-item mb-3">
+                        <a class="nav-link text-white" 
+                           id="themeBtn" 
+                           aria-current="page" 
+                           (click)="cambiarTema()">
+                            <i id="themeIcon" class="fa-solid fa-moon bi me-2"></i>
+                            Modo Oscuro
+                        </a>
+                    </li>
+                }
                 <li>
                     <a class="nav-link text-white" href="#" (click)="cerrarSesion()">
                         <i class="fa-solid fa-right-to-bracket bi me-2"></i> Cerrar sesión
@@ -125,10 +137,12 @@
         }
 
         @if (menuActual === 'buscarDocumentos') {
-            <h2 class="mt-3 ms-3">LISTA DE DOCUENTOS</h2><hr>
+            <h2 class="mt-3 ms-3">LISTA DE DOCUMENTOS</h2><hr>
             <div class="m-5">
                 <app-lista-documentos (ocultarMenu)="ocultarMenu($event)"></app-lista-documentos>
             </div>
         }
     </div>
 </div>
+<app-alert></app-alert>
+<app-confirm></app-confirm>

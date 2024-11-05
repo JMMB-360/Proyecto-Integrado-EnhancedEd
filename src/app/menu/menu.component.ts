@@ -1,14 +1,16 @@
-import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LoginComponent } from '../login/login.component';
 import { RegistroComponent } from '../registro/registro.component';
 import { ListaDocumentosComponent } from '../lista-documentos/lista-documentos.component';
 import { ListaUsuariosComponent } from '../lista-usuarios/lista-usuarios.component';
 import { EditorComponent } from '../editor/editor.component';
+import { AlertComponent } from '../alert/alert.component';
 import { Perfil, Usuario } from '../entities/usuario/usuario';
 import { LobbyComponent } from '../lobby/lobby.component';
 import { ThemeService } from '../theme.service';
 import { Subscription } from 'rxjs';
+import { ConfirmComponent } from '../confirm/confirm.component';
 
 @Component({
   selector: 'app-menu',
@@ -19,7 +21,9 @@ import { Subscription } from 'rxjs';
             ListaDocumentosComponent, 
             ListaUsuariosComponent,
             EditorComponent,
-            LobbyComponent],
+            LobbyComponent,
+            AlertComponent,
+            ConfirmComponent],
   templateUrl: './menu.component.html',
   styleUrl: './menu.component.css'
 })
@@ -35,7 +39,7 @@ export class MenuComponent implements OnInit, OnDestroy {
   permisos: boolean = false;
   root: boolean = false;
   
-  constructor(private renderer: Renderer2, private themeService: ThemeService) {
+  constructor(private themeService: ThemeService) {
   }
 
   ngOnInit(): void {
@@ -52,11 +56,6 @@ export class MenuComponent implements OnInit, OnDestroy {
   
   cambiarMenu(menu: String) {
     this.menuActual = menu;
-    setTimeout(() => {
-      if(menu === 'lobby') {
-        this.cambiarThemeIcon();
-      }
-    }, 10);
   }
 
   async iniciarSesion() {
@@ -66,6 +65,11 @@ export class MenuComponent implements OnInit, OnDestroy {
     }
     if (this.logedUser?.usuario === "root") {
       this.root = true;
+    }
+    if (this.logedUser?.tema === 'oscuro') {
+      this.darkMode = true;
+    } else {
+      this.darkMode = false;
     }
   }
 
@@ -85,18 +89,7 @@ export class MenuComponent implements OnInit, OnDestroy {
 
   async cambiarTema() {
     await this.themeService.cambiarTema(!this.darkMode);
-    this.cambiarThemeIcon();
     this.darkMode = !this.darkMode;
-  }
-
-  cambiarThemeIcon() {
-    if (this.darkMode) {
-      this.renderer.removeClass(document.getElementById('themeIcon'), 'fa-moon');
-      this.renderer.addClass(document.getElementById('themeIcon'), 'fa-sun');
-    } else {
-      this.renderer.removeClass(document.getElementById('themeIcon'), 'fa-sun');
-      this.renderer.addClass(document.getElementById('themeIcon'), 'fa-moon');
-    }
   }
 
 }

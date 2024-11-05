@@ -1,0 +1,32 @@
+.alert {
+    position: fixed;
+    bottom: 4%;
+    right: -100%;
+    z-index: 1050;
+    transition: transform 1.5s ease;
+  }
+  
+  .alert.show {
+    animation: slideIn 0.5s forwards, slideOut 3s 5.5s forwards;
+  }
+  .alert.longTime.show {
+    animation: slideIn 0.5s forwards, slideOut 3s 11s forwards !important;
+  }
+  
+  @keyframes slideIn {
+    from {
+      right: -100%;
+    }
+    to {
+      right: 4%;
+    }
+  }
+  
+  @keyframes slideOut {
+    from {
+      right: 4%;
+    }
+    to {
+      right: -100%;
+    }
+  }
