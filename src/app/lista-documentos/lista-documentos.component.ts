@@ -47,6 +47,7 @@ export class ListaDocumentosComponent implements OnInit {
   userService: Usuario = new Usuario();
   usuario: Usuario = new Usuario();
   secService: Seccion = new Seccion();
+  seccionOriginal: Seccion = new Seccion();
 
   idEditDoc: number = 0;
   idEditSec: number = 0;
@@ -54,8 +55,6 @@ export class ListaDocumentosComponent implements OnInit {
   mostrarLista: boolean = true;
   mostrarModificarForm: boolean = false;
   mostrarModificarSecForm: boolean = false;
-  cambios: boolean = false;
-  cambiosDeAntes: boolean = false;
 
   nombreOriginal: string = "";
   
@@ -166,6 +165,7 @@ export class ListaDocumentosComponent implements OnInit {
         if(respuesta.nombre) {
           this.listaSecciones.push(respuesta);
           this.editSecForm.reset();
+          this.alertService.showAlert('success', 'Sección modificada correctamente ✔️');
           this.mostrarModificarSecForm = false;
           this.mostrarModificarForm = true;
         } else if(respuesta === 'ECode04') {
@@ -235,34 +235,14 @@ export class ListaDocumentosComponent implements OnInit {
     this.emitirOcultarMenu(true);
     this.mostrarModificarForm = true;
     this.idEditDoc = id;
-    this.cambios = false;
-
-    setTimeout(() => {
-      this.subscriptions.add(
-        this.docForm.valueChanges.subscribe(() => {
-          this.cambios = true;
-        })
-      );
-      this.subscriptions.add(
-        this.secForm.valueChanges.subscribe(() => {
-          this.cambios = true;
-        })
-      );
-      this.subscriptions.add(
-        this.editSecForm.valueChanges.subscribe(() => {
-          this.cambios = true;
-        })
-      );
-    }, 1000);
   }
 
   async mostrarModificarSec(id: number) {
 
     const seccion = await this.secService.buscarSeccionPorId(id);
-
-    if (this.cambios) {
-      this.cambiosDeAntes = true;
-    }
+    setTimeout(() => {
+      this.seccionOriginal = JSON.parse(JSON.stringify(seccion));
+    }, 50);
 
     this.editSecForm.patchValue({
       nombre: seccion.nombre,
@@ -273,9 +253,6 @@ export class ListaDocumentosComponent implements OnInit {
     this.mostrarModificarForm = false;
     this.mostrarModificarSecForm = true;
     this.idEditSec = id;
-    setTimeout(() => {
-      this.cambios = false;
-    }, 10);
   }
 
   async actualizarLista() {
@@ -328,28 +305,43 @@ export class ListaDocumentosComponent implements OnInit {
   }
 
   async cancelarSecEdit() {
-    if (this.cambios) {
+    if (this.editSecForm.value.nombre === this.seccionOriginal.nombre &&
+        this.editSecForm.value.numero === this.seccionOriginal.numero &&
+        this.editSecForm.value.contenido === this.seccionOriginal.contenido) 
+    {
+      this.editSecForm.reset();
+      this.mostrarModificarSecForm = false;
+      this.mostrarModificarForm = true;
+    } else {
       const confirmacion = await this.confirmService.ask('Cancelar modificación', 'Hay cambios sin confirmar y se perderán, ¿desea continuar?');
       if (confirmacion) {
         this.editSecForm.reset();
         this.mostrarModificarSecForm = false;
         this.mostrarModificarForm = true;
       }
-    } else {
-      this.editSecForm.reset();
-      this.mostrarModificarSecForm = false;
-      this.mostrarModificarForm = true;
-    }
-    if (!this.cambiosDeAntes) {
-      setTimeout(() => {
-        this.cambios = false;
-      }, 10);
     }
   }
   
   async cancelarCambios() {
-    if(this.cambios === true) {
-      const confirmacion = await this.confirmService.ask('Cancelar modificación', 'Hay cambios sin confirmar y se perderán, ¿desea continuar?');
+    let seccionCambiada = false;
+    this.listaSecciones.forEach((seccionMod, index) => {
+      const seccionOriginal = this.documentoBackUp.secciones[index];
+      if (seccionOriginal.nombre !== seccionMod.nombre ||
+          seccionOriginal.numero !== seccionMod.numero ||
+          seccionOriginal.contenido !== seccionMod.contenido
+      ) {
+        seccionCambiada = true;
+      }
+    });
+    if(seccionCambiada === false &&
+       this.docForm.value.nombre === this.documentoBackUp.nombre &&
+       (this.secForm.value.nombre === '' || this.secForm.value.nombre === null) &&
+       (this.secForm.value.numero === '' || this.secForm.value.numero === null) &&
+       (this.secForm.value.contenido === '' || this.secForm.value.contenido === null)) 
+    {
+      this.salir();
+    } else {
+      const confirmacion = await this.confirmService.ask('Cancelar modificación', 'Hay cambios sin aplicar y se perderán, ¿desea continuar?');
       if(confirmacion) {
         await this.docService.modificarDocumento(this.documentoBackUp.id, this.documentoBackUp.nombre, this.documentoBackUp.secciones);
         await this.seccionesNuevas.forEach(sec => {
@@ -357,8 +349,6 @@ export class ListaDocumentosComponent implements OnInit {
         });
         this.salir();
       }
-    } else {
-      this.salir();
     }
   }
 
@@ -372,7 +362,6 @@ export class ListaDocumentosComponent implements OnInit {
     this.emitirOcultarMenu(false);
     this.subscriptions.unsubscribe();
     this.subscriptions = new Subscription();
-    this.cambios = false;
     this.mostrarLista = true;
   }
 

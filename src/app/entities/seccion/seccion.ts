@@ -78,7 +78,6 @@ export class Seccion {
             if (respuesta && respuesta.error) {
                 return 'ECode04';
             } else if (respuesta && respuesta.id) {
-                alert("Sección modificada correctamente ✔️");
                 return respuesta;
             } else {
                 console.log(respuesta);

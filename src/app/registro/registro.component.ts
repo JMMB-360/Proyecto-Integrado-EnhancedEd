@@ -21,7 +21,6 @@ export class RegistroComponent implements OnInit, OnDestroy {
   perfil = Perfil;
   usuario: string = '';
   userService: Usuario = new Usuario();
-  cambios: boolean = false;
   
   private subscriptions: Subscription = new Subscription();
 
@@ -49,13 +48,6 @@ export class RegistroComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.form.get('dni')?.valueChanges.subscribe(() => this.updateUsuario())
     );
-    setTimeout(() => {
-      this.subscriptions.add(
-        this.form.valueChanges.subscribe(() => {
-          this.cambios = true;
-        })
-      );
-    }, 1000);
 
     await this.updateUsuario();
     setTimeout(() => {
@@ -129,13 +121,16 @@ export class RegistroComponent implements OnInit, OnDestroy {
   }
 
   async cancelar() {
-    if (this.cambios) {
+    if (this.usuario === '' || this.usuario === null &&
+        this.form.value.perfil === '' || this.form.value.perfil === null &&
+        this.form.value.contrasena === '' || this.form.value.contrasena === null) 
+    {
+      this.salir();
+    } else {
       const confirmacion = await this.confirmService.ask('Cancelar registro', 'Se cancelará el registro del usuario, ¿Desea continuar?');
       if (confirmacion) {
         this.salir();
       }
-    } else {
-      this.salir();
     }
   }
 

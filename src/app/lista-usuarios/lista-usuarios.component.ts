@@ -21,10 +21,10 @@ export class ListaUsuariosComponent implements OnInit {
 
   listaUsuario: Usuario[] = [];
   userService: Usuario = new Usuario();
+  usuarioOriginal: Usuario = new Usuario();
   idEditUser: number = 0;
   usuario: string = '';
 
-  cambios: boolean = false;
   mostrarLista: boolean = true;
   mostrarModificarForm: boolean = false;
 
@@ -130,6 +130,9 @@ export class ListaUsuariosComponent implements OnInit {
   async mostrarModificar(id: number, user: string) {
 
     const usuario = await this.userService.buscarUsuarioPorUser(user);
+    setTimeout(() => {
+      this.usuarioOriginal = JSON.parse(JSON.stringify(usuario));
+    }, 50);
 
     this.editUserForm.patchValue({
       dni: usuario.dni,
@@ -158,13 +161,6 @@ export class ListaUsuariosComponent implements OnInit {
     } else {
       this.usuario = "root";
     }
-    setTimeout(() => {
-      this.subscriptions.add(
-        this.editUserForm.valueChanges.subscribe(() => {
-          this.cambios = true;
-        })
-      );
-    }, 1000);
   }
 
   async ordenarListaUsuarios() {
@@ -183,13 +179,18 @@ export class ListaUsuariosComponent implements OnInit {
   }
 
   async cancelarEdit() {
-    if (this.cambios) {
+    if (this.editUserForm.value.dni === this.usuarioOriginal.dni &&
+        this.editUserForm.value.perfil === this.usuarioOriginal.perfil &&
+        this.editUserForm.value.nombre === this.usuarioOriginal.nombre &&
+        this.editUserForm.value.apellidos === this.usuarioOriginal.apellidos &&
+        this.editUserForm.value.contrasena === this.usuarioOriginal.contrasena) 
+    {
+      this.salir();
+    } else {
       const confirmacion = await this.confirmService.ask('Cancelar cambios', 'Hay cambios sin confirmar que serán descartados, ¿desea continuar?');
       if (confirmacion) {
         this.salir();
       }
-    } else {
-      this.salir();
     }
   }
 
@@ -199,7 +200,6 @@ export class ListaUsuariosComponent implements OnInit {
     this.emitirOcultarMenu(false);
     this.subscriptions.unsubscribe();
     this.subscriptions = new Subscription();
-    this.cambios = false;
     this.mostrarLista = true;
   }
 
