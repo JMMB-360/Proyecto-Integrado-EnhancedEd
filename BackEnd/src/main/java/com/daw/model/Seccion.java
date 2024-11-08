@@ -29,7 +29,7 @@ public class Seccion {
 	@Column(name = "NUMERO")
 	private Integer numero;
 	
-	@Column(name = "CONTENDIO")
+	@Column(name = "CONTENIDO")
 	private String contenido;
 	
 	@ManyToOne
