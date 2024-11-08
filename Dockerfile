@@ -1,32 +1,31 @@
-# Usa una imagen de Node.js para construir la aplicación Angular
-FROM node:20.10.0 as build
+# Etapa de construcción
+FROM node:20.10.0 AS build
 
-# Establece el directorio de trabajo
+# Configuración de directorio de trabajo
 WORKDIR /app
 
-# Copia los archivos package.json y package-lock.json
-COPY package*.json ./
+# Copiar archivos de configuración y dependencias
+COPY package.json package-lock.json ./
+COPY angular.json ./
 
-# Instala las dependencias de la aplicación
+# Instalar dependencias
 RUN npm install
 
-# Copia el resto de los archivos de la aplicación
+# Copiar el resto de los archivos del proyecto y construir la aplicación
 COPY . .
+RUN npm run build -- --output-path=dist/proyecto --configuration production
 
-# Compila la aplicación Angular
-RUN npm run build --prod
+# Etapa de despliegue (con Nginx)
+FROM nginx:latest
 
-# Fase de ejecución
-FROM nginx:alpine
-
-# Copia los archivos recién compilados del proyecto a Nginx
-COPY --from=build /app/dist/proyecto /usr/share/nginx/html
-
-# Copia el archivo de configuración de Nginx personalizado (opcional)
+# Copiar el archivo de configuración de Nginx
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Expone el puerto que utiliza Nginx
+# Copiar los archivos generados en la etapa de construcción
+COPY --from=build /app/dist/proyecto /usr/share/nginx/html
+
+# Exponer el puerto 80 para Nginx
 EXPOSE 80
 
-# Comando para ejecutar Nginx
+# Comando de arranque para Nginx
 CMD ["nginx", "-g", "daemon off;"]
