@@ -63,13 +63,24 @@
                 <div class="row mt-4">
                     <div class="col">
                         <label for="contrasena" class="mb-2">Contraseña:</label>
-                        <input class="form-control" type="password" id="contrasena" formControlName="contrasena">
+                        <div class="input-group mb-3">
+                            <input class="form-control" [type]="verContrasena ? 'text' : 'password'" id="contrasena" formControlName="contrasena">
+                            @if(!verContrasena) {
+                                <button class="btn btn-outline-secondary" type="button" id="button-addon2" (click)="mostrarContra()">
+                                    <i class="fa fa-eye"></i>
+                                </button>
+                            } @else {
+                                <button class="btn btn-outline-secondary" type="button" id="button-addon2" (click)="mostrarContra()">
+                                    <i class="fa fa-eye-slash"></i>
+                                </button>
+                            }
+                        </div>
                     </div>
                     <div class="col">
                         <label for="perfil" class="mb-2">Perfil:</label>
                         <select class="form-select" id="perfil" formControlName="perfil">
-                            <option value="ADMINISTRADOR">Administrador</option>
-                            <option value="PROFESOR">Profesor</option>
+                            <option value="ADMINISTRADOR">Administrador/a</option>
+                            <option value="PROFESOR">Profesor/a</option>
                         </select>
                     </div>
                 </div>

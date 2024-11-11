@@ -25,6 +25,7 @@ export class ListaUsuariosComponent implements OnInit {
   idEditUser: number = 0;
   usuario: string = '';
 
+  verContrasena: boolean = false;
   mostrarLista: boolean = true;
   mostrarModificarForm: boolean = false;
 
@@ -176,6 +177,10 @@ export class ListaUsuariosComponent implements OnInit {
     } catch (error) {
       console.error('Error al obtener los usuarios:', error);
     }
+  }
+
+  mostrarContra() {
+    this.verContrasena = !this.verContrasena;
   }
 
   async cancelarEdit() {

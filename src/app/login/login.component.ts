@@ -17,6 +17,7 @@ export class LoginComponent {
 
   form: FormGroup;
   userService: Usuario = new Usuario();
+  verContrasena: boolean = false;
 
   constructor(private formBuilder: FormBuilder,
               private menuService: MenuComponent,
@@ -57,6 +58,14 @@ export class LoginComponent {
       const rootUser = await this.userService.buscarUsuarioPorUser("root");
       await this.userService.modificarTemaUsuario(rootUser.id, "claro");
     }
+  }
+
+  registrar() {
+    this.menuService.cambiarMenu('registro');
+  }
+
+  mostrarContra() {
+    this.verContrasena = !this.verContrasena;
   }
 
   resetForm() {

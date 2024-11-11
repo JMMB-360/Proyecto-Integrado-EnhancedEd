@@ -20,7 +20,10 @@ export class RegistroComponent implements OnInit, OnDestroy {
   form: FormGroup;
   perfil = Perfil;
   usuario: string = '';
+  notLogged: boolean = false;
+  verContrasena: boolean = false;
   userService: Usuario = new Usuario();
+  loggedUser: Usuario | null = new Usuario();
   
   private subscriptions: Subscription = new Subscription();
 
@@ -53,6 +56,11 @@ export class RegistroComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.emitirOcultarMenu(true);
     });
+
+    this.loggedUser = Usuario.getUsuarioLogueado() ?? null;
+    if(this.loggedUser === null) {
+      this.notLogged = true;
+    }
   }
 
   ngOnDestroy() {
@@ -84,6 +92,10 @@ export class RegistroComponent implements OnInit, OnDestroy {
     const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     const valid = passwordPattern.test(control.value);
     return valid ? null : { invalidPassword: true };
+  }
+
+  mostrarContra() {
+    this.verContrasena = !this.verContrasena;
   }
 
   async crear() {
@@ -136,8 +148,12 @@ export class RegistroComponent implements OnInit, OnDestroy {
 
   salir() {
     this.form.reset();
-    this.emitirOcultarMenu(false);
-    this.menuService.cambiarMenu('lobby');
+    if(this.notLogged) {
+      this.menuService.cambiarMenu('login');
+    } else {
+      this.emitirOcultarMenu(false);
+      this.menuService.cambiarMenu('lobby');
+    }
   }
 
   emitirOcultarMenu(valor: boolean) {
