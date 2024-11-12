@@ -131,8 +131,12 @@ public class ApplicationController {
 															  	  	  usDTO.getNombre(),
 															  	  	  usDTO.getApellidos(),
 															  	  	  usDTO.getUsuario(),
-															  	  	  usDTO.getContrasena(),
 															  	  	  usDTO.getPerfil()));
+	}
+	@PutMapping("/usuarios/pass/{id}")
+	public ResponseEntity<Usuario> modificarUsuarioPass(@PathVariable("id") Long id,
+														@Valid @RequestBody UsuarioDTO usDTO) throws Exception {
+		return ResponseEntity.ok().body(servicio.modificarUsuarioPass(id, usDTO.getContrasena()));
 	}
 	@PutMapping("/usuarios/tema/{id}/{tema}")
 	public ResponseEntity<Usuario> modificarTemaUsuario(@PathVariable("id") Long id,

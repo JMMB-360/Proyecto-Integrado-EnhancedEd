@@ -18,6 +18,7 @@ export class ListaUsuariosComponent implements OnInit {
   @Output() ocultarMenu = new EventEmitter<boolean>();
 
   editUserForm: FormGroup;
+  editUserPassForm: FormGroup;
 
   listaUsuario: Usuario[] = [];
   userService: Usuario = new Usuario();
@@ -28,19 +29,22 @@ export class ListaUsuariosComponent implements OnInit {
   verContrasena: boolean = false;
   mostrarLista: boolean = true;
   mostrarModificarForm: boolean = false;
+  mostrarPassForm: boolean = false;
 
   private subscriptions: Subscription = new Subscription();
 
   constructor(private formBuilder: FormBuilder, 
               private alertService: AlertService, 
               private confirmService: ConfirmService) {
-    this.editUserForm = this.formBuilder.group({
+    this.editUserForm = this.formBuilder.group({// ! HACER ALGUNOS CAMPOS NO OBLIGATORIOS
       dni: ['', [Validators.required, this.dniValidator]],
       nombre: ['', Validators.required],
       apellidos: ['', Validators.required],
       usuario: [{value: '', disabled: true}, Validators.required],
-      contrasena: ['', [Validators.required, this.passwordValidator]],
       perfil: ['', Validators.required]
+    });
+    this.editUserPassForm = this.formBuilder.group({
+      contrasena: ['', [Validators.required, this.passwordValidator]]
     });
   }
 
@@ -69,10 +73,9 @@ export class ListaUsuariosComponent implements OnInit {
     const nombre = this.editUserForm.value.nombre;
     const apellidos = this.editUserForm.value.apellidos;
     const usuario = this.usuario;
-    const contrasena = this.editUserForm.value.contrasena;
     const perfil = this.editUserForm.value.perfil;
 
-    await this.userService.modificarUsuario(id, dni, nombre, apellidos, usuario, contrasena, perfil);
+    await this.userService.modificarUsuario(id, dni, nombre, apellidos, usuario, perfil);
     const index = this.listaUsuario.findIndex(user => user.id === this.idEditUser);
     if (index !== -1) {
       this.listaUsuario[index].dni = this.editUserForm.value.dni;
@@ -87,6 +90,13 @@ export class ListaUsuariosComponent implements OnInit {
     this.emitirOcultarMenu(false);
     this.mostrarModificarForm = false;
     this.mostrarLista = true;
+  }
+
+  async modificarPass(id: number) {
+    const contra = this.editUserPassForm.value.contrasena;
+    await this.userService.modificarUsuarioPass(id, contra);
+    this.salirPassEdit();
+    this.alertService.showAlert('success', 'Contraseña modificada correctamente ✔️');
   }
 
   async eliminar(id: number, nombre: string, apellidos: string) {
@@ -140,7 +150,6 @@ export class ListaUsuariosComponent implements OnInit {
       nombre: usuario.nombre,
       apellidos: usuario.apellidos,
       usuario: usuario.usuario,
-      contrasena: usuario.contrasena,
       perfil: usuario.perfil
     });
     this.mostrarLista = false;
@@ -162,6 +171,11 @@ export class ListaUsuariosComponent implements OnInit {
     } else {
       this.usuario = "root";
     }
+  }
+
+  mostrarEditPass() {
+    this.mostrarModificarForm = false;
+    this.mostrarPassForm = true;
   }
 
   async ordenarListaUsuarios() {
@@ -187,8 +201,7 @@ export class ListaUsuariosComponent implements OnInit {
     if (this.editUserForm.value.dni === this.usuarioOriginal.dni &&
         this.editUserForm.value.perfil === this.usuarioOriginal.perfil &&
         this.editUserForm.value.nombre === this.usuarioOriginal.nombre &&
-        this.editUserForm.value.apellidos === this.usuarioOriginal.apellidos &&
-        this.editUserForm.value.contrasena === this.usuarioOriginal.contrasena) 
+        this.editUserForm.value.apellidos === this.usuarioOriginal.apellidos) 
     {
       this.salir();
     } else {
@@ -197,6 +210,12 @@ export class ListaUsuariosComponent implements OnInit {
         this.salir();
       }
     }
+  }
+
+  salirPassEdit() {
+    this.editUserPassForm.reset();
+    this.mostrarPassForm = false;
+    this.mostrarModificarForm = true;
   }
 
   salir() {

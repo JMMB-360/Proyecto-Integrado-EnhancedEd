@@ -31,7 +31,7 @@ export class RegistroComponent implements OnInit, OnDestroy {
               private menuService: MenuComponent,
               private alertService: AlertService,
               private confirmService: ConfirmService) {
-    this.form = this.formBuilder.group({
+    this.form = this.formBuilder.group({// ! HACER ALGUNOS CAMPOS NO OBLIGATORIOS
       dni: ['', [Validators.required, this.dniValidator]],
       nombre: ['', Validators.required],
       apellidos: ['', Validators.required],

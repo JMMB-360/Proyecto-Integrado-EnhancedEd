@@ -61,20 +61,8 @@
                 <div class="mt-4">
                 </div>
                 <div class="row mt-4">
-                    <div class="col">
-                        <label for="contrasena" class="mb-2">Contraseña:</label>
-                        <div class="input-group mb-3">
-                            <input class="form-control" [type]="verContrasena ? 'text' : 'password'" id="contrasena" formControlName="contrasena">
-                            @if(!verContrasena) {
-                                <button class="btn btn-outline-secondary" type="button" id="button-addon2" (click)="mostrarContra()">
-                                    <i class="fa fa-eye"></i>
-                                </button>
-                            } @else {
-                                <button class="btn btn-outline-secondary" type="button" id="button-addon2" (click)="mostrarContra()">
-                                    <i class="fa fa-eye-slash"></i>
-                                </button>
-                            }
-                        </div>
+                    <div class="col d-flex align-items-end">
+                        <button class="btn btn-warning w-100" type="button" (click)="mostrarEditPass()">Cambiar contraseña</button>
                     </div>
                     <div class="col">
                         <label for="perfil" class="mb-2">Perfil:</label>
@@ -88,6 +76,42 @@
                 <div class="row mt-5">
                     <div class="col-6 text-center">
                         <button class="btn btn-secondary w-75" type="button" (click)="cancelarEdit()">Cancelar</button>
+                    </div>
+                    <div class="col-6 text-center">
+                        <button class="btn btn-primary w-75" type="submit">Aplicar</button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+}
+@if(mostrarPassForm) {
+    <div class="row">
+        <div class="col-6 offset-3 registroBox rounded-5 shadow">
+            <form [formGroup]="editUserPassForm" (ngSubmit)="modificarPass(idEditUser)">
+
+                <div class="row mt-4">
+                    <div class="col">
+                        <label for="contrasena" class="mb-2">Contraseña:</label><!--! AVISAR D QUE NO SE PUEDEN REVERTIR CAMBIOS -->
+                        <div class="input-group mb-3">
+                            <input class="form-control" [type]="verContrasena ? 'text' : 'password'" id="contrasena" formControlName="contrasena">
+                            @if(!verContrasena) {
+                                <button class="btn btn-outline-secondary" type="button" id="button-addon2" (click)="mostrarContra()">
+                                    <i class="fa fa-eye"></i>
+                                </button>
+                            } @else {
+                                <button class="btn btn-outline-secondary" type="button" id="button-addon2" (click)="mostrarContra()">
+                                    <i class="fa fa-eye-slash"></i>
+                                </button>
+                            }
+                        </div><!--! PONER UNA LEYENDA DE LOS REQUISITOS -->
+                    </div>
+                </div>
+                
+                <div class="row mt-5">
+                    <div class="col-6 text-center">
+                        <button class="btn btn-secondary w-75" type="button" (click)="salirPassEdit()">Cancelar</button>
                     </div>
                     <div class="col-6 text-center">
                         <button class="btn btn-primary w-75" type="submit">Aplicar</button>

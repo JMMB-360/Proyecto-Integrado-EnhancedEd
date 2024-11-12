@@ -9,10 +9,13 @@
     --color-secondary: #6c757d;
     --color-secondarySelected: #4e555b;
     --color-secondarySelectedBtn: #4e555b;
+    --color-warning: #e4a11b;
+    --color-warningSelected: #ffc655;
     --color-background: #ffffff;
     --color-background2:#eff4ff;
     --color-border: #c2c2c2;
     --color-text: #000000;
+    --color-textInverted: #ffffff;
     --bg-image: url("assets/azulClaro.jpg");
 }
 
@@ -23,10 +26,13 @@
     --color-secondary: #6c757d;
     --color-secondarySelected: #929ea9;
     --color-secondarySelectedBtn: #929ea9;
+    --color-warning: #e4a11b;
+    --color-warningSelected: #ffc655;
     --color-background: #343a40;
     --color-background2: #1b1e21;
     --color-border: #525b64;
     --color-text: #f7f7f7;
+    --color-textInverted: #000000;
     --bg-image: url("assets/moradoOscuro.jpg");
 }
 
@@ -37,10 +43,13 @@
     --color-secondary: #6c757d;
     --color-secondarySelected: #4e555b;
     --color-secondarySelectedBtn: #4e555b;
+    --color-warning: #e4a11b;
+    --color-warningSelected: #a77613;
     --color-background: #ffffff;
     --color-background2:#eff4ff;
     --color-border: #c2c2c2;
     --color-text: #000000;
+    --color-textInverted: #ffffff;
     --bg-image: url("assets/azulClaro.jpg");
 }
 
@@ -79,6 +88,20 @@ button:disabled {
 .btn-secondary:hover {
     background-color: var(--color-secondarySelectedBtn);
     border-color: var(--color-secondarySelectedBtn);
+}
+
+.btn-warning {
+    --bs-btn-disabled-bg: var(--color-warning);
+    --bs-btn-disabled-border-color: var(--color-warning);
+    background-color: var(--color-warning);
+    border-color: var(--color-warning);
+    color: var(--color-textInverted);
+}
+
+.btn-warning:hover {
+    background-color: var(--color-warningSelected);
+    border-color: var(--color-warningSelected);
+    color: var(--color-textInverted);
 }
 
 .tableHead {

@@ -144,7 +144,7 @@ export class Usuario {
         }
     }
     
-    async modificarUsuario(id: number, dni: string, nombre: string, apellidos: string, usuario: string, contrasena: string, perfil: Perfil) {
+    async modificarUsuario(id: number, dni: string, nombre: string, apellidos: string, usuario: string, perfil: Perfil) {
         const URL = `http://localhost:9999/usuarios/${id}`;
         const configuracion = {
             method: "PUT",
@@ -152,7 +152,21 @@ export class Usuario {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': '*'
             },
-            body: JSON.stringify({ dni, nombre, apellidos, usuario, contrasena, perfil })
+            body: JSON.stringify({ dni, nombre, apellidos, usuario, perfil })
+        }
+        const respuesta = await fetch(URL, configuracion).then(respuesta => respuesta.json());
+        return respuesta;
+    }
+
+    async modificarUsuarioPass(id: number, contrasena: string) {
+        const URL = `http://localhost:9999/usuarios/pass/${id}`;
+        const configuracion = {
+            method: "PUT",
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
+            body: JSON.stringify({ contrasena })
         }
         const respuesta = await fetch(URL, configuracion).then(respuesta => respuesta.json());
         return respuesta;

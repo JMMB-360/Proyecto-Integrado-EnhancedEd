@@ -12,6 +12,7 @@ import com.daw.model.Usuario;
 import com.daw.repository.DocumentoRepository;
 import com.daw.repository.SeccionRepository;
 import com.daw.repository.UsuarioRepository;
+import com.daw.util.PasswordUtil;
 
 import lombok.Data;
 
@@ -37,10 +38,17 @@ public class Servicio {
 	public Usuario login(String usuario, String contrasena) throws Exception {
 		Usuario user = userRepo.findByUsuario(usuario);
 		if (user != null) {
-	        if(user.getContrasena().equals(contrasena)) {
+			String encryptedPass = PasswordUtil.encryptPass(contrasena);
+	        if(user.getContrasena().equals(encryptedPass)) {
 				return user;
 	        } else {
-	            throw new Exception("Contraseña incorrecta");
+	        	if(user.getContrasena().equals(contrasena)) {
+	            	user.setContrasena(PasswordUtil.encryptPass(contrasena));
+	            	userRepo.save(user);
+					return user;
+	        	} else {
+		            throw new Exception("Contraseña incorrecta");
+	        	}
 	        }
 	    } else {
 	        throw new Exception("El usuario no existe");
@@ -79,7 +87,7 @@ public class Servicio {
         	user.setNombre(nombre);
         	user.setApellidos(apellidos);
         	user.setUsuario(usuario);
-        	user.setContrasena(contrasena);
+        	user.setContrasena(PasswordUtil.encryptPass(contrasena));
         	user.setPerfil(perfil);
 	        
         	userRepo.save(user);
@@ -112,7 +120,7 @@ public class Servicio {
 	
 	/*---------------------------- MODIFICAR ----------------------------*/
 	
-	public Usuario modificarUsuario(Long id, String dni, String nombre, String apellidos, String usuario, String contrasena, Perfil perfil) throws Exception {
+	public Usuario modificarUsuario(Long id, String dni, String nombre, String apellidos, String usuario, Perfil perfil) throws Exception {
 		Usuario user = userRepo.getReferenceById(id);
         
 		if (userRepo.existsByDni(user.getDni())) {
@@ -121,12 +129,22 @@ public class Servicio {
         	user.setNombre(nombre);
         	user.setApellidos(apellidos);
         	user.setUsuario(usuario);
-        	user.setContrasena(contrasena);
         	user.setPerfil(perfil);
 	        
         	userRepo.save(user);
 	        return user;
 	        
+        } else {
+            throw new Exception("El usuario no existe");
+        }
+    }
+	public Usuario modificarUsuarioPass(Long id, String contrasena) throws Exception {
+		Usuario user = userRepo.getReferenceById(id);
+        
+		if (userRepo.existsByDni(user.getDni())) {
+        	user.setContrasena(PasswordUtil.encryptPass(contrasena));
+        	userRepo.save(user);
+	        return user;
         } else {
             throw new Exception("El usuario no existe");
         }
