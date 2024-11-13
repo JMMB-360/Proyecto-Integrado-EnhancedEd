@@ -6,10 +6,16 @@
                 <div class="col">
                     <label for="dni" class="mb-2">DNI:</label>
                     <input class="form-control" type="text" id="dni" formControlName="dni">
+                    @if (form.get('dni')?.touched && form.get('dni')?.invalid) {
+                        <small style="color: red;">Este campo debe tener 8 dígitos y 1 letra</small>
+                    }
                 </div>
                 <div class="col">
                     <label for="nombre" class="mb-2">Nombre:</label>
                     <input class="form-control" type="text" id="nombre" formControlName="nombre">
+                    @if (form.get('nombre')?.touched && form.get('nombre')?.invalid) {
+                        <small style="color: red;">Este campo es obligatorio</small>
+                    }
                 </div>
             </div>
 
@@ -17,6 +23,9 @@
                 <div class="col">
                     <label for="apellidos" class="mb-2">Apellidos:</label>
                     <input class="form-control" type="text" id="apellidos" formControlName="apellidos">
+                    @if (form.get('apellidos')?.touched && form.get('apellidos')?.invalid) {
+                        <small style="color: red;">Este campo es obligatorio</small>
+                    }
                 </div>
                 <div class="col">
                     <label for="usuario" class="mb-2">Usuario:</label>
@@ -29,7 +38,7 @@
             <div class="row mt-4">
                 <div class="col">
                     <label for="contrasena" class="mb-2">Contraseña:</label>
-                    <div class="input-group mb-3">
+                    <div class="input-group">
                         <input class="form-control" [type]="verContrasena ? 'text' : 'password'" id="contrasena" formControlName="contrasena">
                         @if(!verContrasena) {
                             <button class="btn btn-outline-secondary" type="button" id="button-addon2" (click)="mostrarContra()">
@@ -40,7 +49,10 @@
                                 <i class="fa fa-eye-slash"></i>
                             </button>
                         }
-                    </div><!--! PONER UNA LEYENDA DE LOS REQUISITOS -->
+                    </div>
+                    @if (form.get('contrasena')?.touched && form.get('contrasena')?.invalid) {
+                        <small style="color: red;">Requisitos de la contraseña: 8 caracteres en total, 1 minúscula, 1 mayúscula, 1 dígito, 1 caracter especial</small>
+                    }
                 </div>
                 <div class="col">
                     <label for="perfil" class="mb-2">Perfil:</label>
@@ -48,6 +60,9 @@
                         <option value="ADMINISTRADOR">Administrador/a</option>
                         <option value="PROFESOR">Profesor/a</option>
                     </select>
+                    @if (form.get('perfil')?.touched && form.get('perfil')?.invalid) {
+                        <small style="color: red;">Este campo es obligatorio</small>
+                    }
                 </div>
             </div>
 

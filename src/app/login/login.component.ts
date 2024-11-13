@@ -54,7 +54,7 @@ export class LoginComponent {
   async crearRoot() {
     let resultado = await this.userService.buscarUsuarioPorUser("root");
     if (!resultado) {
-      await this.userService.crearUsuario("11111111A","root","","root","root", Perfil.ADMINISTRADOR);
+      await this.userService.crearUsuario("11111111A","root","root","root","root", Perfil.ADMINISTRADOR);
       const rootUser = await this.userService.buscarUsuarioPorUser("root");
       await this.userService.modificarTemaUsuario(rootUser.id, "claro");
     }

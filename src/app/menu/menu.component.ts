@@ -11,6 +11,7 @@ import { LobbyComponent } from '../lobby/lobby.component';
 import { ThemeService } from '../theme.service';
 import { Subscription } from 'rxjs';
 import { ConfirmComponent } from '../confirm/confirm.component';
+import { ConfirmService } from '../confirm.service';
 
 @Component({
   selector: 'app-menu',
@@ -36,10 +37,13 @@ export class MenuComponent implements OnInit, OnDestroy {
   menuActual: String = 'login';
   darkMode: boolean = false;
   ocultarMenuNav: boolean = true;
+  userSubMenu: boolean = false;
   permisos: boolean = false;
+  edit: boolean = false;
   root: boolean = false;
   
-  constructor(private themeService: ThemeService) {
+  constructor(private themeService: ThemeService,
+              private confirmService: ConfirmService) {
   }
 
   ngOnInit(): void {
@@ -90,6 +94,26 @@ export class MenuComponent implements OnInit, OnDestroy {
   async cambiarTema() {
     await this.themeService.cambiarTema(!this.darkMode);
     this.darkMode = !this.darkMode;
+  }
+
+  toggleSubMenu() {
+    this.userSubMenu = !this.userSubMenu;
+  }
+
+  editUser() {
+    this.userSubMenu = false;
+    this.edit = true;
+    this.cambiarMenu('buscarUsuarios');
+  }
+
+  async deleteUser() {
+    this.userSubMenu = false;
+    const confirmacion = await this.confirmService.ask('Eliminar usuario', '¿Desea eliminar su usuario?');
+    if(confirmacion) {
+      const userId = this.logedUser?.id ?? -1;
+      await this.userService.eliminarUsuario(userId);
+      this.cerrarSesion();
+    }
   }
 
 }

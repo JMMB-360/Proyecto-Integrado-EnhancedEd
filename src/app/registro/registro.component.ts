@@ -31,7 +31,7 @@ export class RegistroComponent implements OnInit, OnDestroy {
               private menuService: MenuComponent,
               private alertService: AlertService,
               private confirmService: ConfirmService) {
-    this.form = this.formBuilder.group({// ! HACER ALGUNOS CAMPOS NO OBLIGATORIOS
+    this.form = this.formBuilder.group({
       dni: ['', [Validators.required, this.dniValidator]],
       nombre: ['', Validators.required],
       apellidos: ['', Validators.required],
@@ -99,12 +99,13 @@ export class RegistroComponent implements OnInit, OnDestroy {
   }
 
   async crear() {
+    this.form.markAllAsTouched();
     if (this.form.invalid) {
       if (this.form.get('dni')?.hasError('required') || this.form.get('dni')?.hasError('invalidDni')) {
         this.alertService.showAlert('danger', 'El DNI no tiene el formato correcto (8 dígitos y una letra) ❌');
       } else
       if (this.form.get('contrasena')?.hasError('required') || this.form.get('contrasena')?.hasError('invalidPassword')) {
-        this.alertService.showAlert('danger', 'La contraseña debe contener al menos 8 caracteres, una letra minúscula, una letra mayúscula, un número y un carácter especial ❌', true);
+        this.alertService.showAlert('danger', 'La contraseña debe tener al menos 8 caracteres en total, una minúscula, una mayúscula, un número y un carácter especial ❌', true);
       } else {
         this.alertService.showAlert('danger', 'Faltan campos por rellenar ❌');
       }

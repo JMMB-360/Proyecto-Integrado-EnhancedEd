@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { AlertService } from '../alert.service';
 import { ConfirmService } from '../confirm.service';
+import { MenuComponent } from '../menu/menu.component';
 
 @Component({
   selector: 'app-lista-usuarios',
@@ -35,8 +36,9 @@ export class ListaUsuariosComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder, 
               private alertService: AlertService, 
-              private confirmService: ConfirmService) {
-    this.editUserForm = this.formBuilder.group({// ! HACER ALGUNOS CAMPOS NO OBLIGATORIOS
+              private confirmService: ConfirmService,
+              public menuService: MenuComponent) {
+    this.editUserForm = this.formBuilder.group({
       dni: ['', [Validators.required, this.dniValidator]],
       nombre: ['', Validators.required],
       apellidos: ['', Validators.required],
@@ -50,6 +52,13 @@ export class ListaUsuariosComponent implements OnInit {
 
   async ngOnInit() {
     await this.ordenarListaUsuarios();
+    if(this.menuService.edit) {
+      this.mostrarLista = false;
+      this.mostrarModificarForm = true;
+      const userId = Usuario.logedUser?.id ?? -1;
+      const userUser = Usuario.logedUser?.usuario ?? '';
+      await this.mostrarModificar(userId, userUser);
+    }
   }
 
   ngOnDestroy() {
@@ -90,13 +99,24 @@ export class ListaUsuariosComponent implements OnInit {
     this.emitirOcultarMenu(false);
     this.mostrarModificarForm = false;
     this.mostrarLista = true;
+    this.toLobby();
   }
 
   async modificarPass(id: number) {
-    const contra = this.editUserPassForm.value.contrasena;
-    await this.userService.modificarUsuarioPass(id, contra);
-    this.salirPassEdit();
-    this.alertService.showAlert('success', 'Contraseña modificada correctamente ✔️');
+    this.editUserPassForm.markAllAsTouched();
+    if (this.editUserPassForm.invalid) {
+      if (this.editUserPassForm.get('contrasena')?.hasError('required') || this.editUserPassForm.get('contrasena')?.hasError('invalidPassword')) {
+        this.alertService.showAlert('danger', 'La contraseña debe tener al menos 8 caracteres en total, una minúscula, una mayúscula, un número y un carácter especial ❌', true);
+      }
+    } else {
+      const confirmacion = await this.confirmService.ask('Cambiar contraseña', '¿Desea cambiar la contraseña?, el cambio no es revertible, pero puede volver a cambiarla libremente');
+      if(confirmacion) {
+        const contra = this.editUserPassForm.value.contrasena;
+        await this.userService.modificarUsuarioPass(id, contra);
+        this.salirPassEdit();
+        this.alertService.showAlert('success', 'Contraseña modificada correctamente ✔️');
+      }
+    }
   }
 
   async eliminar(id: number, nombre: string, apellidos: string) {
@@ -225,6 +245,15 @@ export class ListaUsuariosComponent implements OnInit {
     this.subscriptions.unsubscribe();
     this.subscriptions = new Subscription();
     this.mostrarLista = true;
+    this.toLobby();
+  }
+
+  toLobby() {
+    if (this.menuService.edit) {
+      this.menuService.edit = false;
+      this.ocultarMenu.emit(false);
+      this.menuService.cambiarMenu('lobby');
+    }
   }
 
   emitirOcultarMenu(valor: boolean) {
