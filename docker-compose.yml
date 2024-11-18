@@ -18,11 +18,11 @@ services:
 
   db:
     image: jmanbre360298/pi_jmmb_db:v1
-    ports:
-      - "3306:3306"
     environment:
       MYSQL_DATABASE: pi_bd
       MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
 
