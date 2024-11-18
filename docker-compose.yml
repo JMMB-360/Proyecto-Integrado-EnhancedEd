@@ -3,10 +3,19 @@ services:
     image: jmanbre360298/pi_jmmb_front:v1
     ports:
       - "4200:80"
+    depends_on:
+      - backend
+
   backend:
     image: jmanbre360298/pi_jmmb_back:v1
     ports:
       - "9999:9999"
+    environment:
+      - DB_HOST=db
+      - DB_PORT=3306
+    depends_on:
+      - db
+
   db:
     image: jmanbre360298/pi_jmmb_db:v1
     ports:
@@ -14,3 +23,8 @@ services:
     environment:
       MYSQL_DATABASE: pi_bd
       MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
