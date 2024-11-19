@@ -141,15 +141,6 @@
                     <div class="col-11">
                         <h2>LISTA DE USUARIOS</h2>
                     </div>
-                    <div class="col-1 d-flex align-items-center justify-content-center">
-                        <div class="userIcon d-flex align-items-center justify-content-center" (click)="toggleSubMenu()">
-                            <i class="fa-solid fa-user"></i>
-                        </div>
-                        <div class="dropdown-menu dropdown-menu-right bg-dark" [class.show]="userSubMenu" style="position: absolute; top: 10%; right: 1%;">
-                            <button class="dropdown-item text-white subMenuItem" (click)="editUser()">Modificar usuario</button>
-                            <button class="dropdown-item text-danger subMenuItem" (click)="deleteUser()">Eliminar usuario</button>
-                        </div>
-                    </div>
                 </div><hr>
             }
             <div class="m-5">
@@ -168,15 +159,6 @@
             <div class="row mt-3 ms-3">
                 <div class="col-11">
                     <h2>LISTA DE DOCUMENTOS</h2>
-                </div>
-                <div class="col-1 d-flex align-items-center justify-content-center">
-                    <div class="userIcon d-flex align-items-center justify-content-center" (click)="toggleSubMenu()">
-                        <i class="fa-solid fa-user"></i>
-                    </div>
-                    <div class="dropdown-menu dropdown-menu-right bg-dark" [class.show]="userSubMenu" style="position: absolute; top: 10%; right: 1%;">
-                        <button class="dropdown-item text-white subMenuItem" (click)="editUser()">Modificar usuario</button>
-                        <button class="dropdown-item text-danger subMenuItem" (click)="deleteUser()">Eliminar usuario</button>
-                    </div>
                 </div>
             </div><hr>
             <div class="m-5">
