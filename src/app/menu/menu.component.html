@@ -1,5 +1,5 @@
 <div class="row m-0 p-0">
-    @if (ocultarMenuNav != true) {
+    @if (!ocultarMenuNav) {
         <div class="col-2 d-flex flex-column flex-shrink-0 p-3 text-white bg-dark vh-100 sticky-top">
             <a class="d-flex align-items-center text-white text-decoration-none" href="#" (click)="cambiarMenu('lobby')">
                 <i class="fa-solid fa-file-pdf bi me-2" style="width: 40px; height: 40px;"></i>
@@ -120,13 +120,6 @@
                 <div class="col-11">
                     <h2>INICIO</h2>
                 </div>
-
-                <!-- <div class="col-1 d-flex align-items-center justify-content-center">
-                    <div class="userIcon d-flex align-items-center justify-content-center" (click)="editUser()">
-                        <i class="fa-solid fa-user"></i>
-                    </div>
-                </div> -->
-
                 <div class="col-1 d-flex align-items-center justify-content-center">
                     <div class="userIcon d-flex align-items-center justify-content-center" (click)="toggleSubMenu()">
                         <i class="fa-solid fa-user"></i>
@@ -136,7 +129,6 @@
                         <button class="dropdown-item text-danger subMenuItem" (click)="deleteUser()">Eliminar usuario</button>
                     </div>
                 </div>
-
             </div><hr>
             <div class="m-4">
                 <app-lobby></app-lobby>
@@ -150,8 +142,12 @@
                         <h2>LISTA DE USUARIOS</h2>
                     </div>
                     <div class="col-1 d-flex align-items-center justify-content-center">
-                        <div class="userIcon d-flex align-items-center justify-content-center" (click)="editUser()">
+                        <div class="userIcon d-flex align-items-center justify-content-center" (click)="toggleSubMenu()">
                             <i class="fa-solid fa-user"></i>
+                        </div>
+                        <div class="dropdown-menu dropdown-menu-right bg-dark" [class.show]="userSubMenu" style="position: absolute; top: 10%; right: 1%;">
+                            <button class="dropdown-item text-white subMenuItem" (click)="editUser()">Modificar usuario</button>
+                            <button class="dropdown-item text-danger subMenuItem" (click)="deleteUser()">Eliminar usuario</button>
                         </div>
                     </div>
                 </div><hr>
@@ -174,8 +170,12 @@
                     <h2>LISTA DE DOCUMENTOS</h2>
                 </div>
                 <div class="col-1 d-flex align-items-center justify-content-center">
-                    <div class="userIcon d-flex align-items-center justify-content-center" (click)="editUser()">
+                    <div class="userIcon d-flex align-items-center justify-content-center" (click)="toggleSubMenu()">
                         <i class="fa-solid fa-user"></i>
+                    </div>
+                    <div class="dropdown-menu dropdown-menu-right bg-dark" [class.show]="userSubMenu" style="position: absolute; top: 10%; right: 1%;">
+                        <button class="dropdown-item text-white subMenuItem" (click)="editUser()">Modificar usuario</button>
+                        <button class="dropdown-item text-danger subMenuItem" (click)="deleteUser()">Eliminar usuario</button>
                     </div>
                 </div>
             </div><hr>
