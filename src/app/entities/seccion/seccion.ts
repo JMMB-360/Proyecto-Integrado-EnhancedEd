@@ -57,7 +57,7 @@ export class Seccion {
                 return 'ECode02';
             }
         } catch (error) {
-            console.error("Error al crear sección:", error);
+            console.error("Error al crear la sección:", error);
             return error;
         }
     }
@@ -84,7 +84,7 @@ export class Seccion {
                 return 'ECode02';
             }
         } catch (error) {
-            console.error("Error al crear sección:", error);
+            console.error("Error al modificar la sección:", error);
             return error;
         }
     }

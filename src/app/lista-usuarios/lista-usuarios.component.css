@@ -4,3 +4,11 @@ textarea.ng-touched.ng-invalid {
   border-color: red;
   background-color: #ffe6e6;
 }
+
+.info {
+  cursor: pointer;
+}
+
+.text-warning {
+  color: var(--color-warning) !important;
+}

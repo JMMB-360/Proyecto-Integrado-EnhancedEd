@@ -21,6 +21,7 @@ export class RegistroComponent implements OnInit, OnDestroy {
   perfil = Perfil;
   usuario: string = '';
   notLogged: boolean = false;
+  showInfo: boolean = false;
   verContrasena: boolean = false;
   userService: Usuario = new Usuario();
   loggedUser: Usuario | null = new Usuario();
@@ -98,17 +99,13 @@ export class RegistroComponent implements OnInit, OnDestroy {
     this.verContrasena = !this.verContrasena;
   }
 
+  toggleInfo() {
+    this.showInfo = !this.showInfo;
+  }
+
   async crear() {
     this.form.markAllAsTouched();
     if (this.form.invalid) {
-      if (this.form.get('dni')?.hasError('required') || this.form.get('dni')?.hasError('invalidDni')) {
-        this.alertService.showAlert('danger', 'El DNI no tiene el formato correcto (8 dígitos y una letra) ❌');
-      } else
-      if (this.form.get('contrasena')?.hasError('required') || this.form.get('contrasena')?.hasError('invalidPassword')) {
-        this.alertService.showAlert('danger', 'La contraseña debe tener al menos 8 caracteres en total, una minúscula, una mayúscula, un número y un carácter especial ❌', true);
-      } else {
-        this.alertService.showAlert('danger', 'Faltan campos por rellenar ❌');
-      }
       return;
     }
     const dni = this.form.value.dni;

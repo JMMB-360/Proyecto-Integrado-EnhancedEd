@@ -28,6 +28,7 @@ export class ListaUsuariosComponent implements OnInit {
   usuario: string = '';
 
   verContrasena: boolean = false;
+  showInfo: boolean = false;
   mostrarLista: boolean = true;
   mostrarModificarForm: boolean = false;
   mostrarPassForm: boolean = false;
@@ -67,15 +68,6 @@ export class ListaUsuariosComponent implements OnInit {
 
   async modificar(id: number) {
     if (this.editUserForm.invalid) {
-      if (this.editUserForm.get('dni')?.hasError('required') || this.editUserForm.get('dni')?.hasError('invalidDni')) {
-        this.alertService.showAlert('danger', 'El DNI no tiene el formato correcto (8 dígitos y una letra) ❌');
-
-      } else if (this.editUserForm.get('contrasena')?.hasError('required') || this.editUserForm.get('contrasena')?.hasError('invalidPassword')) {
-        this.alertService.showAlert('danger', 'La contraseña debe contener al menos 8 caracteres, una letra minúscula y una mayúscula, un número y un carácter especial ❌', true);
-      
-      } else {
-        this.alertService.showAlert('danger', 'Faltan campos por rellenar ❌');//todo: Decir qué campos y marcarlos
-      }
       return;
     }
     const dni = this.editUserForm.value.dni;
@@ -105,9 +97,7 @@ export class ListaUsuariosComponent implements OnInit {
   async modificarPass(id: number) {
     this.editUserPassForm.markAllAsTouched();
     if (this.editUserPassForm.invalid) {
-      if (this.editUserPassForm.get('contrasena')?.hasError('required') || this.editUserPassForm.get('contrasena')?.hasError('invalidPassword')) {
-        this.alertService.showAlert('danger', 'La contraseña debe tener al menos 8 caracteres en total, una minúscula, una mayúscula, un número y un carácter especial ❌', true);
-      }
+      return;
     } else {
       const confirmacion = await this.confirmService.ask('Cambiar contraseña', '¿Desea cambiar la contraseña?, el cambio no es revertible, pero puede volver a cambiarla libremente');
       if(confirmacion) {
@@ -215,6 +205,10 @@ export class ListaUsuariosComponent implements OnInit {
 
   mostrarContra() {
     this.verContrasena = !this.verContrasena;
+  }
+
+  toggleInfo() {
+    this.showInfo = !this.showInfo;
   }
 
   async cancelarEdit() {

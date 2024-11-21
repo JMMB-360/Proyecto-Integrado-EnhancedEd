@@ -39,3 +39,8 @@ i {
     width: 22px;
     height: 22px;
 }
+
+.userName {
+    border-right: 1px solid;
+    border-color: var(--color-text);
+}

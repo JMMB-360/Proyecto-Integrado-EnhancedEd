@@ -97,6 +97,11 @@
                     </a>
                 </li>
             </ul>
+            <div class="text-center">
+                <a href="https://www.iesalmudeyne.es" target="_blank">
+                    <img src="../../assets/IESA-LogoLight.png" class="mb-4 w-75" alt="IESA Logo"/>
+                </a>
+            </div>
         </div>
     }
 
@@ -117,16 +122,24 @@
 
         @if (menuActual === 'lobby') {
             <div class="row mt-3 ms-3">
-                <div class="col-11">
+                <div class="col-5">
                     <h2>INICIO</h2>
                 </div>
-                <div class="col-1 d-flex align-items-center justify-content-center">
-                    <div class="userIcon d-flex align-items-center justify-content-center" (click)="toggleSubMenu()">
-                        <i class="fa-solid fa-user"></i>
-                    </div>
-                    <div class="dropdown-menu dropdown-menu-right bg-dark" [class.show]="userSubMenu" style="position: absolute; top: 10%; right: 1%;">
-                        <button class="dropdown-item text-white subMenuItem" (click)="editUser()">Modificar usuario</button>
-                        <button class="dropdown-item text-danger subMenuItem" (click)="deleteUser()">Eliminar usuario</button>
+                <div class="col-7">
+                    <div class="row">
+                        <div class="col-10 text-end userName">
+                            {{this.logedUser?.nombre}} {{this.logedUser?.apellidos}}<br/>
+                            {{this.logedUser?.perfil}}
+                        </div>
+                        <div class="col-2 d-flex align-items-center justify-content-start">
+                            <div class="userIcon d-flex align-items-center justify-content-center" (click)="toggleSubMenu()">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+                            <div class="dropdown-menu dropdown-menu-right bg-dark" [class.show]="userSubMenu" style="position: absolute; top: 10%; right: 1%;">
+                                <button class="dropdown-item text-white subMenuItem" (click)="editUser()">Modificar usuario</button>
+                                <button class="dropdown-item text-danger subMenuItem" (click)="deleteUser()">Eliminar usuario</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div><hr>

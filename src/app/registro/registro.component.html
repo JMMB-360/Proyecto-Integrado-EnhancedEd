@@ -7,14 +7,14 @@
                     <label for="dni" class="mb-2">DNI:</label>
                     <input class="form-control" type="text" id="dni" formControlName="dni">
                     @if (form.get('dni')?.touched && form.get('dni')?.invalid) {
-                        <small style="color: red;">Este campo debe tener 8 dígitos y 1 letra</small>
+                        <small class="text-danger">Este campo debe tener 8 dígitos y 1 letra</small>
                     }
                 </div>
                 <div class="col">
                     <label for="nombre" class="mb-2">Nombre:</label>
                     <input class="form-control" type="text" id="nombre" formControlName="nombre">
                     @if (form.get('nombre')?.touched && form.get('nombre')?.invalid) {
-                        <small style="color: red;">Este campo es obligatorio</small>
+                        <small class="text-danger">Este campo es obligatorio</small>
                     }
                 </div>
             </div>
@@ -24,7 +24,7 @@
                     <label for="apellidos" class="mb-2">Apellidos:</label>
                     <input class="form-control" type="text" id="apellidos" formControlName="apellidos">
                     @if (form.get('apellidos')?.touched && form.get('apellidos')?.invalid) {
-                        <small style="color: red;">Este campo es obligatorio</small>
+                        <small class="text-danger">Este campo es obligatorio</small>
                     }
                 </div>
                 <div class="col">
@@ -37,7 +37,11 @@
             </div>
             <div class="row mt-4">
                 <div class="col">
-                    <label for="contrasena" class="mb-2">Contraseña:</label>
+                    <label for="contrasena" class="mb-2 d-flex flex-row">Contraseña 
+                        <div class="info ms-2" (click)="toggleInfo()">
+                            <i class="fa-solid fa-circle-info" ></i>
+                        </div>:
+                    </label>
                     <div class="input-group">
                         <input class="form-control" [type]="verContrasena ? 'text' : 'password'" id="contrasena" formControlName="contrasena">
                         @if(!verContrasena) {
@@ -51,7 +55,9 @@
                         }
                     </div>
                     @if (form.get('contrasena')?.touched && form.get('contrasena')?.invalid) {
-                        <small style="color: red;">Requisitos de la contraseña: 8 caracteres en total, 1 minúscula, 1 mayúscula, 1 dígito, 1 caracter especial</small>
+                        <small class="text-danger">Requisitos de la contraseña: 8 caracteres en total, 1 minúscula, 1 mayúscula, 1 dígito, 1 caracter especial</small>
+                    } @else if (showInfo) {
+                        <small class="text-warning">Requisitos de la contraseña: 8 caracteres en total, 1 minúscula, 1 mayúscula, 1 dígito, 1 caracter especial</small>
                     }
                 </div>
                 <div class="col">
@@ -61,12 +67,15 @@
                         <option value="PROFESOR">Profesor/a</option>
                     </select>
                     @if (form.get('perfil')?.touched && form.get('perfil')?.invalid) {
-                        <small style="color: red;">Este campo es obligatorio</small>
+                        <small class="text-danger">Este campo es obligatorio</small>
                     }
                 </div>
             </div>
 
-            <div class="row mt-5">
+            <div class="mt-4">
+                <p class="text-warning">*Todos los campos son obligatorios</p>
+            </div>
+            <div class="row mt-2">
                 <div class="col-6 text-center">
                     <button class="btn btn-secondary w-75" type="button" (click)="cancelar()">Cancelar</button>
                 </div>
