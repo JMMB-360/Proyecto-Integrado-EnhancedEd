@@ -1,89 +1,102 @@
-<div class="row">
-    <div class="col-6 offset-3 registroBox rounded-5 shadow">
-        <form [formGroup]="form" (ngSubmit)="crear()">
-            
-            <div class="row">
-                <div class="col">
-                    <label for="dni" class="mb-2">DNI:</label>
-                    <input class="form-control" type="text" id="dni" formControlName="dni">
-                    @if (form.get('dni')?.touched && form.get('dni')?.invalid) {
-                        <small class="text-danger">Este campo debe tener 8 dígitos y 1 letra</small>
-                    }
+<div class="container m-0 p-0 w-100">
+    <div class="row d-flex justify-content-center m-0">
+        <div class="col-lg-6 col-md-8 col-12 registroBox shadow pb-4 me-md-2">
+            <form [formGroup]="form" (ngSubmit)="crear()">
+                
+                <div class="mb-4 d-md-none d-block">
+                    <p class="text-warning">*Todos los campos son obligatorios</p>
                 </div>
-                <div class="col">
-                    <label for="nombre" class="mb-2">Nombre:</label>
-                    <input class="form-control" type="text" id="nombre" formControlName="nombre">
-                    @if (form.get('nombre')?.touched && form.get('nombre')?.invalid) {
-                        <small class="text-danger">Este campo es obligatorio</small>
-                    }
-                </div>
-            </div>
-
-            <div class="row mt-4">
-                <div class="col">
-                    <label for="apellidos" class="mb-2">Apellidos:</label>
-                    <input class="form-control" type="text" id="apellidos" formControlName="apellidos">
-                    @if (form.get('apellidos')?.touched && form.get('apellidos')?.invalid) {
-                        <small class="text-danger">Este campo es obligatorio</small>
-                    }
-                </div>
-                <div class="col">
-                    <label for="usuario" class="mb-2">Usuario:</label>
-                    <input class="form-control" type="text" id="usuario" formControlName="usuario">
-                </div>
-            </div>
-
-            <div class="mt-4">
-            </div>
-            <div class="row mt-4">
-                <div class="col">
-                    <label for="contrasena" class="mb-2 d-flex flex-row">Contraseña 
-                        <div class="info ms-2" (click)="toggleInfo()">
-                            <i class="fa-solid fa-circle-info" ></i>
-                        </div>:
-                    </label>
-                    <div class="input-group">
-                        <input class="form-control" [type]="verContrasena ? 'text' : 'password'" id="contrasena" formControlName="contrasena">
-                        @if(!verContrasena) {
-                            <button class="btn btn-outline-secondary" type="button" id="button-addon2" (click)="mostrarContra()">
-                                <i class="fa fa-eye"></i>
-                            </button>
-                        } @else {
-                            <button class="btn btn-outline-secondary" type="button" id="button-addon2" (click)="mostrarContra()">
-                                <i class="fa fa-eye-slash"></i>
-                            </button>
+                
+                <div class="row">
+                    <div class="col-md-6 col-12 mb-md-0 mb-4">
+                        <label for="dni" class="mb-2">DNI:</label>
+                        <input class="form-control" type="text" id="dni" formControlName="dni">
+                        @if (form.get('dni')?.touched && form.get('dni')?.invalid) {
+                            <small class="text-danger">Este campo debe tener 8 dígitos y 1 letra</small>
                         }
                     </div>
-                    @if (form.get('contrasena')?.touched && form.get('contrasena')?.invalid) {
-                        <small class="text-danger">Requisitos de la contraseña: 8 caracteres en total, 1 minúscula, 1 mayúscula, 1 dígito, 1 caracter especial</small>
-                    } @else if (showInfo) {
-                        <small class="text-warning">Requisitos de la contraseña: 8 caracteres en total, 1 minúscula, 1 mayúscula, 1 dígito, 1 caracter especial</small>
-                    }
+                    <div class="col-md-6 col-12">
+                        <label for="nombre" class="mb-2">Nombre:</label>
+                        <input class="form-control" type="text" id="nombre" formControlName="nombre">
+                        @if (form.get('nombre')?.touched && form.get('nombre')?.invalid) {
+                            <small class="text-danger">Este campo es obligatorio</small>
+                        }
+                    </div>
                 </div>
-                <div class="col">
-                    <label for="perfil" class="mb-2">Perfil:</label>
-                    <select class="form-select" id="perfil" formControlName="perfil">
-                        <option value="ADMINISTRADOR">Administrador/a</option>
-                        <option value="PROFESOR">Profesor/a</option>
-                    </select>
-                    @if (form.get('perfil')?.touched && form.get('perfil')?.invalid) {
-                        <small class="text-danger">Este campo es obligatorio</small>
-                    }
-                </div>
-            </div>
 
-            <div class="mt-4">
-                <p class="text-warning">*Todos los campos son obligatorios</p>
-            </div>
-            <div class="row mt-2">
-                <div class="col-6 text-center">
-                    <button class="btn btn-secondary w-75" type="button" (click)="cancelar()">Cancelar</button>
+                <div class="row mt-4">
+                    <div class="col-md-6 col-12 mb-md-0 mb-4">
+                        <label for="apellidos" class="mb-2">Apellidos:</label>
+                        <input class="form-control" type="text" id="apellidos" formControlName="apellidos">
+                        @if (form.get('apellidos')?.touched && form.get('apellidos')?.invalid) {
+                            <small class="text-danger">Este campo es obligatorio</small>
+                        }
+                    </div>
+                    <div class="col-md-6 col-12">
+                        <label for="usuario" class="mb-2 d-flex flex-row">Usuario
+                            <div class="info ms-2" (click)="toggleInfoUser()">
+                                <i class="fa-solid fa-circle-info" ></i>
+                            </div>:
+                        </label>
+                        <input class="form-control" type="text" id="usuario" formControlName="usuario">
+                        @if (showInfoUser) {
+                            <small class="text-warning">El usuario se rellena automáticamente con los datos del DNI, nombre y apellidos</small>
+                        }
+                    </div>
                 </div>
-                <div class="col-6 text-center">
-                    <button class="btn btn-primary w-75" type="submit">Registrar</button>
+
+                <div class="mt-4">
                 </div>
-            </div>
-            
-        </form>
+                <div class="row mt-4">
+                    <div class="col-md-6 col-12 mb-md-0 mb-4">
+                        <label for="contrasena" class="mb-2 d-flex flex-row">Contraseña 
+                            <div class="info ms-2" (click)="toggleInfoPass()">
+                                <i class="fa-solid fa-circle-info" ></i>
+                            </div>:
+                        </label>
+                        <div class="input-group">
+                            <input class="form-control" [type]="verContrasena ? 'text' : 'password'" id="contrasena" formControlName="contrasena">
+                            @if(!verContrasena) {
+                                <button class="btn btn-outline-secondary" type="button" id="button-addon2" (click)="mostrarContra()">
+                                    <i class="fa fa-eye"></i>
+                                </button>
+                            } @else {
+                                <button class="btn btn-outline-secondary" type="button" id="button-addon2" (click)="mostrarContra()">
+                                    <i class="fa fa-eye-slash"></i>
+                                </button>
+                            }
+                        </div>
+                        @if (form.get('contrasena')?.touched && form.get('contrasena')?.invalid) {
+                            <small class="text-danger">Requisitos de la contraseña: 8 caracteres en total, 1 minúscula, 1 mayúscula, 1 dígito, 1 caracter especial</small>
+                        } @else if (showInfoPass) {
+                            <small class="text-warning">Requisitos de la contraseña: 8 caracteres en total, 1 minúscula, 1 mayúscula, 1 dígito, 1 caracter especial</small>
+                        }
+                    </div>
+                    <div class="col-md-6 col-12">
+                        <label for="perfil" class="mb-2">Perfil:</label>
+                        <select class="form-select" id="perfil" formControlName="perfil">
+                            <option value="ADMINISTRADOR">Administrador/a</option>
+                            <option value="PROFESOR">Profesor/a</option>
+                        </select>
+                        @if (form.get('perfil')?.touched && form.get('perfil')?.invalid) {
+                            <small class="text-danger">Este campo es obligatorio</small>
+                        }
+                    </div>
+                </div>
+
+                <div class="mt-4 d-md-block d-none">
+                    <p class="text-warning">*Todos los campos son obligatorios</p>
+                </div>
+                <div class="row mt-2 mb-3">
+                    <div class="col-md-6 col-12 mb-md-0 mb-4 mt-md-0 mt-4 text-center">
+                        <button class="btn btn-secondary w-75" type="button" (click)="cancelar()">Cancelar</button>
+                    </div>
+                    <div class="col-md-6 col-12 text-center">
+                        <button class="btn btn-primary w-75" type="submit">Registrar</button>
+                    </div>
+                </div>
+                
+            </form>
+        </div>
     </div>
 </div>

@@ -1,36 +1,35 @@
-<div class="row">
-    <div class="col-4 offset-4 loginBox rounded-5 shadow pb-4">
-        <form [formGroup]="form" (ngSubmit)="validar()">
-            <div>
-                <label for="usuario" class="mb-2">Usuario:</label>
-                <input class="form-control" type="text" id="usuario" formControlName="usuario">
-            </div>
+<div class="container m-0 p-0 w-100">
+    <div class="row d-flex justify-content-center m-0">
+        <div class="col-xl-4 col-lg-6 col-md-8 col-12 loginBox shadow pb-4 me-md-2">
+            <form [formGroup]="form" (ngSubmit)="validar()">
+                <div>
+                    <label for="usuario" class="mb-2">Usuario:</label>
+                    <input class="form-control" type="text" id="usuario" formControlName="usuario">
+                </div>
 
-            <div class="mt-4">
-                <label for="contrasena" class="mb-2">Contraseña:</label>
-                <div class="input-group mb-3">
-                    <input class="form-control" [type]="verContrasena ? 'text' : 'password'" id="contrasena" formControlName="contrasena">
-                    @if(!verContrasena) {
-                        <button class="btn btn-outline-secondary" type="button" id="button-addon2" (click)="mostrarContra()">
-                            <i class="fa fa-eye"></i>
-                        </button>
-                    } @else {
-                        <button class="btn btn-outline-secondary" type="button" id="button-addon2" (click)="mostrarContra()">
-                            <i class="fa fa-eye-slash"></i>
-                        </button>
-                    }
+                <div class="mt-4">
+                    <label for="contrasena" class="mb-2">Contraseña:</label>
+                    <div class="input-group mb-3">
+                        <input class="form-control" [type]="verContrasena ? 'text' : 'password'" id="contrasena" formControlName="contrasena">
+                        @if(!verContrasena) {
+                            <button class="btn btn-outline-secondary" type="button" id="button-addon2" (click)="mostrarContra()">
+                                <i class="fa fa-eye"></i>
+                            </button>
+                        } @else {
+                            <button class="btn btn-outline-secondary" type="button" id="button-addon2" (click)="mostrarContra()">
+                                <i class="fa fa-eye-slash"></i>
+                            </button>
+                        }
+                    </div>
                 </div>
-            </div>
-            
-            <div class="row mt-5 mb-4">
-                <div class="col-6 text-center">
-                    <button class="btn btn-secondary w-75" (click)="resetForm()">Cancelar</button>
+                
+                <div class="row mt-5 mb-4">
+                    <div class="col-md-8 offset-md-2 col-12 text-center mb-md-0 mb-3">
+                        <button class="btn btn-primary w-75" type="submit">Aceptar</button>
+                    </div>
                 </div>
-                <div class="col-6 text-center">
-                    <button class="btn btn-primary w-75" type="submit">Aceptar</button>
-                </div>
-            </div>
-        </form>
-        <p class="text-center">¿No te has registrado?, <a href="#" (click)="registrar()">pulsa aquí</a>.</p>
+            </form>
+            <p class="text-center">¿No te has registrado?, <a href="#" (click)="registrar()">pulsa aquí</a>.</p>
+        </div>
     </div>
 </div>

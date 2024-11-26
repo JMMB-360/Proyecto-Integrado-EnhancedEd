@@ -100,6 +100,10 @@ export class MenuComponent implements OnInit, OnDestroy {
     this.userSubMenu = !this.userSubMenu;
   }
 
+  quitSubMenu() {
+    this.userSubMenu = false;
+  }
+
   editUser() {
     this.userSubMenu = false;
     this.edit = true;

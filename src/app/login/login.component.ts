@@ -67,8 +67,4 @@ export class LoginComponent {
   mostrarContra() {
     this.verContrasena = !this.verContrasena;
   }
-
-  resetForm() {
-    this.form.reset();
-  }
 }

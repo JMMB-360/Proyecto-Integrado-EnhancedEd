@@ -3,8 +3,16 @@ div {
 }
 
 .loginBox {
-    padding: 4%;
+    padding: 8%;
     text-align: left;
     margin-top: 10%;
     background-color: var(--color-background);
+    border-radius: 2rem;
+}
+
+@media (min-width: 768px) {
+    .loginBox {
+        padding: 4%;
+        border-radius: 2rem;
+    }
 }

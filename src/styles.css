@@ -53,9 +53,22 @@
     --bg-image: url("assets/azulClaro.jpg");
 }
 
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+.container {
+    max-width: none;
+}
+
 .bg {
     background-image: var(--bg-image);
     background-size: cover;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
 }
 
 img.avoid-break {
@@ -135,9 +148,17 @@ button:disabled {
 .registroBox, .editorBox {
     background-color: var(--color-background);
     color: var(--color-text);
-    padding: 4%;
+    padding: 8%;
     text-align: left;
     margin-top: 4%;
+    border-radius: 2rem;
+}
+
+@media (min-width: 768px) {
+    .registroBox, .editorBox {
+        padding: 4%;
+        border-radius: 2rem;
+    }
 }
 
 .ql-container {

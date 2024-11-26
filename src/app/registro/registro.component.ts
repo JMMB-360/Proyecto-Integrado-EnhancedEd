@@ -21,7 +21,8 @@ export class RegistroComponent implements OnInit, OnDestroy {
   perfil = Perfil;
   usuario: string = '';
   notLogged: boolean = false;
-  showInfo: boolean = false;
+  showInfoPass: boolean = false;
+  showInfoUser: boolean = false;
   verContrasena: boolean = false;
   userService: Usuario = new Usuario();
   loggedUser: Usuario | null = new Usuario();
@@ -99,8 +100,11 @@ export class RegistroComponent implements OnInit, OnDestroy {
     this.verContrasena = !this.verContrasena;
   }
 
-  toggleInfo() {
-    this.showInfo = !this.showInfo;
+  toggleInfoPass() {
+    this.showInfoPass = !this.showInfoPass;
+  }
+  toggleInfoUser() {
+    this.showInfoUser = !this.showInfoUser;
   }
 
   async crear() {

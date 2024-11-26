@@ -1,7 +1,5 @@
 .logo {
     width: 60%;
-    margin-top: 40%;
-    margin-bottom: 9%;
     border-radius: 50%;
     background-color: var(--color-background);
 }

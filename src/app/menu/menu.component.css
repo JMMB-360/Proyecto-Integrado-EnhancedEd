@@ -1,5 +1,5 @@
 .mainDiv {
-    margin-bottom: 10%;
+    margin-bottom: 8%;
     color: var(--color-text);
 }
 
@@ -43,4 +43,33 @@ i {
 .userName {
     border-right: 1px solid;
     border-color: var(--color-text);
+}
+
+hr {
+    margin-left: 1%;
+    margin-right: 1%;
+}
+
+.hrMenu {
+    margin-top: 22.5px;
+}
+
+.mainDiv h2, .lobbyHeader {
+    width: 98%;
+}
+
+.userIcon-container {
+    position: relative;
+}
+
+.subMenu {
+    position: absolute;
+    top: 110%;
+    right: 0;
+    z-index: 1050;
+    display: none;
+}
+
+.subMenu.show {
+    display: block;
 }

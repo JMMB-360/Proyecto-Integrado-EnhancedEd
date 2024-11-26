@@ -1,11 +1,11 @@
 <div class="row m-0 p-0">
     @if (!ocultarMenuNav) {
-        <div class="col-2 d-flex flex-column flex-shrink-0 p-3 text-white bg-dark vh-100 sticky-top">
+        <div class="col-2 d-lg-flex flex-column flex-shrink-0 p-3 text-white bg-dark vh-100 sticky-top d-none">
             <a class="d-flex align-items-center text-white text-decoration-none" href="#" (click)="cambiarMenu('lobby')">
                 <i class="fa-solid fa-file-pdf bi me-2" style="width: 40px; height: 40px;"></i>
                 <span class="fs-4">DocBuilder</span>
             </a>
-            <hr>
+            <hr class="hrMenu">
             <ul class="nav nav-pills flex-column mb-auto">
                 <li class="nav-item mb-3">
                     <a class="nav-link text-white" 
@@ -97,47 +97,168 @@
                     </a>
                 </li>
             </ul>
-            <div class="text-center">
+            <div class="text-center d-flex align-self-end">
                 <a href="https://www.iesalmudeyne.es" target="_blank">
                     <img src="../../assets/IESA-LogoLight.png" class="mb-4 w-75" alt="IESA Logo"/>
                 </a>
             </div>
         </div>
+        <div class="d-lg-none d-block p-0">
+            <div class="collapse" id="navbarToggleExternalContent">
+                <div class="bg-dark p-4">
+                    <ul class="nav nav-pills flex-column mb-auto">
+                        <li class="nav-item mb-3">
+                            <a class="nav-link text-white" 
+                               aria-current="page" 
+                               href="#" 
+                               (click)="cambiarMenu('lobby')"
+                               [ngClass]="{ 'activo': menuActual === 'lobby' }">
+                                <i class="fa-solid fa-house bi me-2"></i> Inicio
+                            </a>
+                        </li>
+                        @if(permisos) {
+                            <li class="nav-item mb-3 dropdown dropdown">
+                                <a class="nav-link dropdown-toggle text-white" 
+                                   href="#" 
+                                   role="button" 
+                                   data-bs-toggle="dropdown"
+                                   [ngClass]="{ 'activo': menuActual === 'registro' }"
+                                   [ngClass]="{ 'activo': menuActual === 'buscarUsuarios' }">
+                                    <i class="fa-solid fa-users bi me-2"></i> Usuarios
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-dark">
+                                    <li>
+                                        <a class="dropdown-item" 
+                                           href="#" (click)="cambiarMenu('registro')" 
+                                           [ngClass]="{ 'activo': menuActual === 'registro' }">
+                                           Registrar</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" 
+                                           href="#" (click)="cambiarMenu('buscarUsuarios')" 
+                                           [ngClass]="{ 'activo': menuActual === 'buscarUsuarios' }">
+                                           Buscar</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                        @if(!root) {
+                            <li class="nav-item mb-3 dropdown dropdown">
+                                <a class="nav-link dropdown-toggle text-white" 
+                                href="#" 
+                                role="button" 
+                                data-bs-toggle="dropdown"
+                                [ngClass]="{ 'activo': menuActual === 'editor' }"
+                                [ngClass]="{ 'activo': menuActual === 'buscarDocumentos' }">
+                                    <i class="fa-solid fa-file-invoice bi me-2"></i> Documentos
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-dark">
+                                    <li>
+                                        <a class="dropdown-item" 
+                                           href="#" 
+                                           (click)="cambiarMenu('editor')"
+                                           [ngClass]="{ 'activo': menuActual === 'editor' }">
+                                           Nuevo</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" 
+                                           href="#" 
+                                           (click)="cambiarMenu('buscarDocumentos')"
+                                           [ngClass]="{ 'activo': menuActual === 'buscarDocumentos' }">
+                                           Buscar</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                        @if(darkMode) {
+                            <li class="nav-item mb-3">
+                                <a class="nav-link text-white" 
+                                   id="themeBtn" 
+                                   aria-current="page" 
+                                   (click)="cambiarTema()">
+                                    <i id="themeIcon" class="fa-solid fa-sun bi me-2"></i>
+                                    Modo Claro
+                                </a>
+                            </li>
+                        } @else {
+                            <li class="nav-item mb-3">
+                                <a class="nav-link text-white" 
+                                   id="themeBtn" 
+                                   aria-current="page" 
+                                   (click)="cambiarTema()">
+                                    <i id="themeIcon" class="fa-solid fa-moon bi me-2"></i>
+                                    Modo Oscuro
+                                </a>
+                            </li>
+                        }
+                        <li>
+                            <a class="nav-link text-white" href="#" (click)="cerrarSesion()">
+                                <i class="fa-solid fa-right-to-bracket bi me-2"></i> Cerrar sesión
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <nav class="navbar navbar-dark bg-dark">
+                <div class="container-fluid">
+                    <a class="d-flex align-items-center text-white text-decoration-none" href="#" (click)="cambiarMenu('lobby')">
+                        <i class="fa-solid fa-file-pdf bi me-2" style="width: 30px; height: 30px;"></i>
+                        <span class="fs-4">DocBuilder</span>
+                    </a>
+                    <button class="navbar-toggler" 
+                            type="button" 
+                            data-bs-toggle="collapse" 
+                            data-bs-target="#navbarToggleExternalContent" 
+                            aria-controls="navbarToggleExternalContent" 
+                            aria-expanded="false" 
+                            aria-label="Toggle navigation"
+                            (click)="quitSubMenu()">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                </div>
+            </nav>
+        </div>
     }
 
-    <div class="mainDiv" [ngClass]="ocultarMenuNav ? 'col-12' : 'col-10'">
+    <div class="mainDiv p-0 col-12" [ngClass]="ocultarMenuNav ? 'col-lg-12' : 'col-lg-10'">
         @if (menuActual === 'registro') {
-            <h2 class="mt-3 ms-3">REGISTRO DE USUARIO</h2><hr>
+            <h2 class="mt-3 ps-3">REGISTRO DE USUARIO</h2><hr>
             <div class="m-4">
                 <app-registro (ocultarMenu)="ocultarMenu($event)"></app-registro>
             </div>
         }
 
         @if (menuActual === 'login') {
-            <h2 class="mt-3 ms-3">INICIO DE SESIÓN</h2><hr>
+            <h2 class="mt-3 ps-3">INICIO DE SESIÓN</h2><hr>
             <div class="m-4">
                 <app-login></app-login>
             </div>
         }
 
         @if (menuActual === 'lobby') {
-            <div class="row mt-3 ms-3">
-                <div class="col-5">
+            <div class="row mt-3 ps-3 lobbyHeader">
+                <div class="col-lg-6 col-2 d-flex align-items-center">
                     <h2>INICIO</h2>
                 </div>
-                <div class="col-7">
+                <div class="col-lg-6 col-10">
                     <div class="row">
-                        <div class="col-10 text-end userName">
+                        <div class="col-md-10 col-9 text-end userName d-lg-block d-none">
                             {{this.logedUser?.nombre}} {{this.logedUser?.apellidos}}<br/>
                             {{this.logedUser?.perfil}}
                         </div>
-                        <div class="col-2 d-flex align-items-center justify-content-start">
-                            <div class="userIcon d-flex align-items-center justify-content-center" (click)="toggleSubMenu()">
-                                <i class="fa-solid fa-user"></i>
-                            </div>
-                            <div class="dropdown-menu dropdown-menu-right bg-dark" [class.show]="userSubMenu" style="position: absolute; top: 10%; right: 1%;">
-                                <button class="dropdown-item text-white subMenuItem" (click)="editUser()">Modificar usuario</button>
-                                <button class="dropdown-item text-danger subMenuItem" (click)="deleteUser()">Eliminar usuario</button>
+                        <div class="col-md-10 col-9 text-end userName d-lg-none d-block">
+                            {{this.logedUser?.nombre}}<br/>
+                            {{this.logedUser?.perfil}}
+                        </div>
+                        <div class="col-md-2 col-3 d-flex align-items-center justify-content-start">
+                            <div class="userIcon-container position-relative">
+                                <div class="userIcon d-flex align-items-center justify-content-center" (click)="toggleSubMenu()">
+                                    <i class="fa-solid fa-user"></i>
+                                </div>
+                                <div class="dropdown-menu dropdown-menu-right bg-dark subMenu" [class.show]="userSubMenu">
+                                    <button class="dropdown-item text-white subMenuItem" (click)="editUser()">Modificar usuario</button>
+                                    <button class="dropdown-item text-danger subMenuItem" (click)="deleteUser()">Eliminar usuario</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -150,7 +271,7 @@
 
         @if (menuActual === 'buscarUsuarios') {
             @if (!edit) {
-                <div class="row mt-3 ms-3">
+                <div class="row mt-3 ps-3">
                     <div class="col-11">
                         <h2>LISTA DE USUARIOS</h2>
                     </div>
@@ -162,14 +283,14 @@
         }
 
         @if (menuActual === 'editor') {
-            <h2 class="mt-3 ms-3">NUEVO DOCUMENTO</h2><hr>
+            <h2 class="mt-3 ps-3">NUEVO DOCUMENTO</h2><hr>
             <div class="m-4">
                 <app-editor (ocultarMenu)="ocultarMenu($event)"></app-editor>
             </div>
         }
 
         @if (menuActual === 'buscarDocumentos') {
-            <div class="row mt-3 ms-3">
+            <div class="row mt-3 ps-3">
                 <div class="col-11">
                     <h2>LISTA DE DOCUMENTOS</h2>
                 </div>
