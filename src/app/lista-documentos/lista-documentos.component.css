@@ -1,3 +1,19 @@
 .table2 .tableBody {
     --bs-table-bg: var(--color-background2) !important;
 }
+
+.btnDocForm {
+    width: 42%;
+}
+
+.table-responsive > table {
+    min-width: 600px;
+}
+
+.info {
+    cursor: pointer;
+}
+
+.activo {
+    color: var(--color-warning);
+}

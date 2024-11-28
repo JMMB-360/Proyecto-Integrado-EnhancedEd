@@ -271,13 +271,21 @@
 
         @if (menuActual === 'buscarUsuarios') {
             @if (!edit) {
-                <div class="row mt-3 ps-3">
-                    <div class="col-11">
-                        <h2>LISTA DE USUARIOS</h2>
+                <div class="mt-3 d-flex flex-row">
+                    <div class="ps-3">
+                        <h2 style="white-space: nowrap;">LISTA DE USUARIOS</h2>
                     </div>
+                    @if (!ocultarMenuNav) {
+                        <div class="info ms-3" (click)="toggleInfo()" [ngClass]="{ 'activoInfo': showInfo === true }">
+                            <i class="fa-solid fa-circle-info mt-lg-3 mt-2"></i>
+                        </div>
+                    }
                 </div><hr>
+                @if (showInfo) {
+                    <small class="text-warning mb-3 d-block ps-3">Las tablas se pueden deslizar horizontalmente en caso de no caber en la pantalla.</small>
+                }
             }
-            <div class="m-5">
+            <div class="m-lg-5 m-2">
                 <app-lista-usuarios (ocultarMenu)="ocultarMenu($event)"></app-lista-usuarios>
             </div>
         }
@@ -290,12 +298,20 @@
         }
 
         @if (menuActual === 'buscarDocumentos') {
-            <div class="row mt-3 ps-3">
-                <div class="col-11">
-                    <h2>LISTA DE DOCUMENTOS</h2>
+            <div class="mt-3 d-flex flex-row">
+                <div class="ps-3">
+                    <h2 style="white-space: nowrap;">LISTA DE DOCUMENTOS</h2>
                 </div>
+                @if (!ocultarMenuNav) {
+                    <div class="info ms-3" (click)="toggleInfo()" [ngClass]="{ 'activoInfo': showInfo === true }">
+                        <i class="fa-solid fa-circle-info mt-lg-3 mt-2"></i>
+                    </div>
+                }
             </div><hr>
-            <div class="m-5">
+            @if (showInfo) {
+                <small class="text-warning mb-3 d-block ps-3">Las tablas se pueden deslizar horizontalmente en caso de no caber en la pantalla.</small>
+            }
+            <div class="m-lg-5 m-2">
                 <app-lista-documentos (ocultarMenu)="ocultarMenu($event)"></app-lista-documentos>
             </div>
         }

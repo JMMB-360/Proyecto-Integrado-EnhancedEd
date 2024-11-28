@@ -1,52 +1,58 @@
 @if(mostrarLista) {
-    <table class="table table-hover">
-        <thead class="tableHead">
-            <tr>
-                <th scope="col">DNI</th>
-                <th scope="col">Nombre</th>
-                <th scope="col">Apellidos</th>
-                <th scope="col">Usuario</th>
-                <th scope="col">Perfil</th>
-                <th scope="col"></th>
-            </tr>
-        </thead>
-        <tbody class="tableBody">
-            @for (usuario of listaUsuario; track usuario.id) {
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="tableHead">
                 <tr>
-                    <td scope="row">{{usuario.dni}}</td>
-                    <td scope="row">{{usuario.nombre}}</td>
-                    <td scope="row">{{usuario.apellidos}}</td>
-                    <td scope="row">{{usuario.usuario}}</td>
-                    <td scope="row">{{usuario.perfil}}</td>
-                    <td scope="row" class="text-end">
-                        @if (usuario.perfil !="ADMINISTRADOR") {
-                            <button class="btn" (click)="mostrarModificar(usuario.id, usuario.usuario)" style="margin-right: 10px;">
-                                <i class="fa-solid fa-pen tableBtn" alt="Editar usuario"></i>
-                            </button>
-                            <button class="btn" (click)="eliminar(usuario.id, usuario.nombre, usuario.apellidos)">
-                                <i class="fa-solid fa-trash tableBtn" alt="Eliminar usuario"></i>
-                            </button>
-                        }
-                    </td>
+                    <th scope="col" style="width: 12%;">DNI</th>
+                    <th scope="col" style="width: 18%;">Nombre</th>
+                    <th scope="col">Apellidos</th>
+                    <th scope="col" style="width: 12%;">Usuario</th>
+                    <th scope="col" style="width: 15%;">Perfil</th>
+                    <th scope="col" style="width: 12%;"></th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody class="tableBody">
+                @for (usuario of listaUsuario; track usuario.id) {
+                    <tr>
+                        <td scope="row">{{usuario.dni}}</td>
+                        <td scope="row">{{usuario.nombre}}</td>
+                        <td scope="row">{{usuario.apellidos}}</td>
+                        <td scope="row">{{usuario.usuario}}</td>
+                        <td scope="row">{{usuario.perfil}}</td>
+                        <td scope="row" class="text-end">
+                            @if (usuario.perfil !="ADMINISTRADOR") {
+                                <button class="btn" (click)="mostrarModificar(usuario.id, usuario.usuario)" style="margin-right: 10px;">
+                                    <i class="fa-solid fa-pen tableBtn" alt="Editar usuario"></i>
+                                </button>
+                                <button class="btn" (click)="eliminar(usuario.id, usuario.nombre, usuario.apellidos)">
+                                    <i class="fa-solid fa-trash tableBtn" alt="Eliminar usuario"></i>
+                                </button>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 }
 @if(mostrarModificarForm) {
-    <div class="row">
-        <div class="col-6 offset-3 registroBox rounded-5 shadow">
+    <div class="row d-flex justify-content-center m-0">
+        <div class="col-lg-6 col-md-8 col-12 registroBox shadow pb-4 me-md-2">
             <form [formGroup]="editUserForm" (ngSubmit)="modificar(idEditUser)">
+                
+                <div class="mb-4 d-md-none d-block">
+                    <p class="text-warning">*Todos los campos son obligatorios</p>
+                </div>
 
                 <div class="row">
-                    <div class="col">
+                    <div class="col-md-6 col-12 mb-md-0 mb-4">
                         <label for="dni" class="mb-2">DNI:</label>
                         <input class="form-control" type="text" id="dni" formControlName="dni">
                         @if (editUserForm.get('dni')?.touched && editUserForm.get('dni')?.invalid) {
                             <small class="text-danger">Este campo debe tener 8 dígitos y 1 letra</small>
                         }
                     </div>
-                    <div class="col">
+                    <div class="col-md-6 col-12">
                         <label for="nombre" class="mb-2">Nombre:</label>
                         <input class="form-control" type="text" id="nombre" formControlName="nombre">
                         @if (editUserForm.get('nombre')?.touched && editUserForm.get('nombre')?.invalid) {
@@ -56,27 +62,27 @@
                 </div>
     
                 <div class="row mt-4">
-                    <div class="col">
+                    <div class="col-md-6 col-12 mb-md-0 mb-4">
                         <label for="apellidos" class="mb-2">Apellidos:</label>
                         <input class="form-control" type="text" id="apellidos" formControlName="apellidos">
                         @if (editUserForm.get('apellidos')?.touched && editUserForm.get('apellidos')?.invalid) {
                             <small class="text-danger">Este campo es obligatorio</small>
                         }
                     </div>
-                    <div class="col">
+                    <div class="col-md-6 col-12">
                         <label for="usuario" class="mb-2">Usuario:</label>
                         <input class="form-control" type="text" id="usuario" formControlName="usuario">
                     </div>
                 </div>
     
-                <div class="mt-4">
+                <div class="mt-4 pt-md-0 pt-1">
                 </div>
                 <div class="row mt-4">
-                    <div class="col d-flex align-items-end">
+                    <div class="col-md-6 col-12 mb-md-0 mb-4 d-flex align-items-end">
                         <button class="btn btn-warning w-100" type="button" (click)="mostrarEditPass()">Cambiar contraseña</button>
                     </div>
                     @if (menuService.permisos && !menuService.root) {
-                        <div class="col">
+                        <div class="col-md-6 col-12">
                             <label for="perfil" class="mb-2">Perfil:</label>
                             <select class="form-select" id="perfil" formControlName="perfil">
                                 <option value="ADMINISTRADOR">Administrador/a</option>
@@ -89,14 +95,14 @@
                     }
                 </div>
 
-                <div class="mt-4">
+                <div class="mt-4 d-md-block d-none">
                     <p class="text-warning">*Todos los campos son obligatorios</p>
                 </div>
-                <div class="row mt-2">
-                    <div class="col-6 text-center">
+                <div class="row mt-2 mb-3">
+                    <div class="col-md-6 col-12 mb-md-0 mb-4 mt-md-0 mt-4 text-center">
                         <button class="btn btn-secondary w-75" type="button" (click)="cancelarEdit()">Cancelar</button>
                     </div>
-                    <div class="col-6 text-center">
+                    <div class="col-md-6 col-12 text-center">
                         <button class="btn btn-primary w-75" type="submit">Aplicar</button>
                     </div>
                 </div>
@@ -106,12 +112,12 @@
     </div>
 }
 @if(mostrarPassForm) {
-    <div class="row">
-        <div class="col-6 offset-3 registroBox rounded-5 shadow">
+    <div class="row d-flex justify-content-center m-0">
+        <div class="col-lg-6 col-md-8 col-12 registroBox shadow pb-4 me-md-2">
             <form [formGroup]="editUserPassForm" (ngSubmit)="modificarPass(idEditUser)">
 
                 <div class="row mt-4">
-                    <div class="col">
+                    <div class="col-12 text-center">
                         <label for="contrasena" class="mb-2 d-flex flex-row">Nueva contraseña 
                             <div class="info ms-2" (click)="toggleInfo()">
                                 <i class="fa-solid fa-circle-info" ></i>
@@ -137,11 +143,11 @@
                     </div>
                 </div>
                 
-                <div class="row mt-5">
-                    <div class="col-6 text-center">
+                <div class="row mt-5 mb-3">
+                    <div class="col-md-6 col-12 mb-md-0 mb-4 mt-md-0 mt-4 text-center">
                         <button class="btn btn-secondary w-75" type="button" (click)="salirPassEdit()">Cancelar</button>
                     </div>
-                    <div class="col-6 text-center">
+                    <div class="col-md-6 col-12 text-center">
                         <button class="btn btn-primary w-75" type="submit">Aplicar</button>
                     </div>
                 </div>

@@ -5,11 +5,12 @@ import { Subscription } from 'rxjs';
 import { MenuComponent } from '../menu/menu.component';
 import { AlertService } from '../alert.service';
 import { ConfirmService } from '../confirm.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-registro',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './registro.component.html',
   styleUrl: './registro.component.css'
 })

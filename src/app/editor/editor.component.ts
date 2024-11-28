@@ -8,13 +8,14 @@ import { QuillModule } from 'ngx-quill';
 import { Subscription } from 'rxjs';
 import { AlertService } from '../alert.service';
 import { ConfirmService } from '../confirm.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   standalone: true,
   selector: 'app-editor',
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.css'],
-  imports: [ReactiveFormsModule, QuillModule]
+  imports: [ReactiveFormsModule, QuillModule, CommonModule]
 })
 export class EditorComponent implements OnInit {
 
@@ -43,6 +44,7 @@ export class EditorComponent implements OnInit {
   
   listaSecciones: Seccion[] = [];
 
+  showInfo: boolean = false;
   mostrarDocForm: boolean = true;
   mostrarSecForm: boolean = false;
   mostrarEditarSec: boolean = false;
@@ -200,7 +202,9 @@ export class EditorComponent implements OnInit {
 
   aplicar() {
     this.docService.modificarDocumento(this.documento.id, this.docForm.value.nombre, this.listaSecciones);
-    this.alertService.showAlert('success', 'Secciones aplicadas ✔️');
+    if(this.listaSecciones.length > 0) {
+      this.alertService.showAlert('success', 'Secciones aplicadas ✔️');
+    }
     this.emitirOcultarMenu(false);
     this.menuService.cambiarMenu('lobby');
   }
@@ -220,6 +224,10 @@ export class EditorComponent implements OnInit {
     this.mostrarSecForm = false;
     this.mostrarEditarSec = true;
     this.idEditSec = id;
+  }
+  
+  toggleInfo() {
+    this.showInfo = !this.showInfo;
   }
 
   ordenarSecciones() {

@@ -5,6 +5,10 @@ textarea.ng-touched.ng-invalid {
   background-color: #ffe6e6;
 }
 
+.table-responsive > table {
+  min-width: 1200px;
+}
+
 .info {
   cursor: pointer;
 }

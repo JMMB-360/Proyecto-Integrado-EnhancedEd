@@ -39,6 +39,7 @@ export class MenuComponent implements OnInit, OnDestroy {
   ocultarMenuNav: boolean = true;
   userSubMenu: boolean = false;
   permisos: boolean = false;
+  showInfo: boolean = false;
   edit: boolean = false;
   root: boolean = false;
   
@@ -60,6 +61,7 @@ export class MenuComponent implements OnInit, OnDestroy {
   
   cambiarMenu(menu: String) {
     this.menuActual = menu;
+    this.showInfo = false;
   }
 
   async iniciarSesion() {
@@ -98,6 +100,10 @@ export class MenuComponent implements OnInit, OnDestroy {
 
   toggleSubMenu() {
     this.userSubMenu = !this.userSubMenu;
+  }
+  
+  toggleInfo() {
+    this.showInfo = !this.showInfo;
   }
 
   quitSubMenu() {

@@ -1,125 +1,59 @@
 @if(mostrarLista) {
-    <table class="table table-hover mt-2">
-        <thead class="tableHead">
-            <tr>
-                <th scope="col">Nombre</th>
-                <th scope="col">Nº Secciones</th>
-                <th scope="col"></th>
-            </tr>
-        </thead>
-        <tbody class="tableBody">
-            @for (documento of listaDocumentos; track documento.id) {
-                <tr>
-                    <td scope="row">{{documento.nombre}}</td>
-                    <td scope="row">{{documento.secciones.length}}</td>
-                    <td scope="row" class="text-end">
-                        <button class="btn" (click)="mostrarModificar(documento.id, documento.nombre)" title="Modificar">
-                            <i class="fa-solid fa-pen tableBtn" alt="Editar documento"></i>
-                        </button>
-                        <button class="btn" (click)="generatePdf(documento.nombre)" title="Generar PDF">
-                            <i class="fa-solid fa-download tableBtn" alt="Generar PDF"></i>
-                        </button>
-                        <button class="btn" (click)="duplicarDocumento(documento.nombre)" title="Duplicar">
-                            <i class="fa-solid fa-copy tableBtn" alt="Duplicar documento"></i>
-                        </button>
-                        <button class="btn" (click)="eliminarDoc(documento.id, documento.nombre)" title="Eliminar">
-                            <i class="fa-solid fa-trash tableBtn" alt="Eliminar documento"></i>
-                        </button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-@if(mostrarModificarForm) {
-<div class="row">
-    <div class="col-8 offset-2 editorBox rounded-5 shadow">
-        <form [formGroup]="docForm" class="pb-4">
-                <label for="documento" class="mb-2">Nombre del documento:</label>
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" formControlName="nombre">
-                </div>
-        </form>
-
-        <h2>{{docForm.value.nombre}}: {{secForm.value.nombre}}</h2>
-        <form [formGroup]="secForm" (ngSubmit)="anadirSec()">
-            <div class="container p-0">
-
-                <div class="row">
-                    <label for="seccion" class="mb-2">Título de la sección:</label>
-                    <div class="col-10">
-                        <input class="form-control" type="text" formControlName="nombre">
-                    </div>
-                    <div class="col-2">
-                        <input class="form-control" type="number" formControlName="numero" placeholder="Nº">
-                    </div>
-                </div>
-
-                <div class="row mt-4">
-                    <label for="contenido" class="mb-2">Contenido de la sección:</label>
-                    <quill-editor 
-                        formControlName="contenido" 
-                        [modules]="{ toolbar: toolbarOptions }" 
-                        [placeholder]="'Escribe aquí...'"
-                        theme="snow"
-                        class="mb-5">
-                    </quill-editor>
-
-                    <div class="col-6 offset-6 text-end mt-3 mb-4">
-                        <button class="btn btn-primary" type="submit" style="margin-right: 15px;">Añadir sección</button>
-                        <button class="btn btn-secondary" type="button" (click)="resetSecForm()">Reiniciar sección</button>
-                    </div>
-                </div>
-
-            </div>
-        </form>
-        <h2>Secciones</h2>
-        <table class="table table-hover table2">
+    <div class="table-responsive">
+        <table class="table table-hover mt-2">
             <thead class="tableHead">
                 <tr>
-                    <th scope="col">Sección</th>
-                    <th scope="col">Índice</th>
+                    <th scope="col" style="width: 38%;">Nombre</th>
+                    <th scope="col" style="width: 20%;">Nº Secciones</th>
                     <th scope="col"></th>
                 </tr>
             </thead>
             <tbody class="tableBody">
-                @for(seccion of listaSecciones; track seccion.id) {
+                @for (documento of listaDocumentos; track documento.id) {
                     <tr>
-                        <td scope="row">{{ seccion.nombre }}</td>
-                        <td scope="row">{{ seccion.numero }}</td>
+                        <td scope="row">{{documento.nombre}}</td>
+                        <td scope="row">{{documento.secciones.length}}</td>
                         <td scope="row" class="text-end">
-                            <button class="btn" (click)="mostrarModificarSec(seccion.id)">
-                                <i class="fa-solid fa-pen tableBtn" alt="Editar sección"></i>
+                            <button class="btn" (click)="mostrarModificar(documento.id, documento.nombre)" title="Modificar">
+                                <i class="fa-solid fa-pen tableBtn" alt="Editar documento"></i>
                             </button>
-                            <button class="btn" (click)="eliminarSec(seccion.id, seccion.nombre)">
-                                <i class="fa-solid fa-trash tableBtn" alt="Eliminar sección"></i>
+                            <button class="btn" (click)="generatePdf(documento.nombre)" title="Generar PDF">
+                                <i class="fa-solid fa-download tableBtn" alt="Generar PDF"></i>
+                            </button>
+                            <button class="btn" (click)="duplicarDocumento(documento.nombre)" title="Duplicar">
+                                <i class="fa-solid fa-copy tableBtn" alt="Duplicar documento"></i>
+                            </button>
+                            <button class="btn" (click)="eliminarDoc(documento.id, documento.nombre)" title="Eliminar">
+                                <i class="fa-solid fa-trash tableBtn" alt="Eliminar documento"></i>
                             </button>
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
-        <div class="row mt-3">
-            <div class="col-6 offset-6 text-end">
-                <button class="btn btn-primary" type="button" (click)="aplicarCambios()" style="margin-right: 15px;">Aplicar cambios</button>
-                <button class="btn btn-secondary" type="button" (click)="cancelarCambios()">Cancelar cambios</button>
-            </div>
-        </div>
     </div>
-</div>
 }
-@if(mostrarModificarSecForm) {
-    <div class="row">
-        <div class="col-8 offset-2 editorBox rounded-5 shadow">
-            <form [formGroup]="editSecForm" (ngSubmit)="modificarSec(idEditSec)">
-                <div class="container">
+@if(mostrarModificarForm) {
+    <div class="row d-flex justify-content-center m-0">
+        <div class="col-xl-6 col-md-8 col-12 editorBox shadow pb-4 me-md-2">
+            <form [formGroup]="docForm" class="pb-4">
+                    <label for="documento" class="mb-2">Nombre del documento:</label>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" formControlName="nombre">
+                    </div>
+            </form>
+
+            <h2>{{docForm.value.nombre}}: {{secForm.value.nombre}}</h2>
+            <form [formGroup]="secForm" (ngSubmit)="anadirSec()">
+                <div class="container p-0 mt-lg-2 mt-4">
 
                     <div class="row">
                         <label for="seccion" class="mb-2">Título de la sección:</label>
-                        <div class="col-10">
+                        <div class="col-md-10 col-12 mb-md-0 mb-3">
                             <input class="form-control" type="text" formControlName="nombre">
                         </div>
-                        <div class="col-2">
+                        <div class="col-md-2 col-4">
+                            <label for="seccion" class="mb-2 d-md-none d-block">Índice:</label>
                             <input class="form-control" type="number" formControlName="numero" placeholder="Nº">
                         </div>
                     </div>
@@ -134,9 +68,92 @@
                             class="mb-5">
                         </quill-editor>
 
-                        <div class="col-6 offset-6 text-end mt-5">
-                            <button class="btn btn-primary" type="submit" style="margin-right: 15px;">Aplicar</button>
-                            <button class="btn btn-secondary" type="button" (click)="cancelarSecEdit()">Cancelar</button>
+                        <div class="col-12 d-md-none d-block mt-md-0 mt-5 pt-md-0 pt-3"></div>
+                        <div class="col-lg-6 offset-lg-6 col-12 text-end mt-lg-3 mt-md-5 mb-4">
+                            <button class="btn btn-secondary" type="button" (click)="resetSecForm()" style="margin-right: 15px;">Reiniciar sección</button>
+                            <button class="btn btn-primary" type="submit">Añadir sección</button>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+            <div class="mt-3 d-flex flex-row">
+                <div>
+                    <h2>Secciones</h2>
+                </div>
+                <div class="info ms-3" (click)="toggleInfo()" [ngClass]="{ 'activo': showInfo === true }">
+                    <i class="fa-solid fa-circle-info mt-lg-3 mt-2"></i>
+                </div>
+            </div>
+            @if (showInfo) {
+                <small class="text-warning mb-3 d-block">En caso de que no se muestre la tabla completa, puedes deslizarla horizontalmente.</small>
+            }
+            <div class="table-responsive">
+                <table class="table table-hover table2">
+                    <thead class="tableHead">
+                        <tr>
+                            <th scope="col" style="width: 50%;">Sección</th>
+                            <th scope="col" style="width: 20%;">Índice</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody class="tableBody">
+                        @for(seccion of listaSecciones; track seccion.id) {
+                            <tr>
+                                <td scope="row">{{ seccion.nombre }}</td>
+                                <td scope="row">{{ seccion.numero }}</td>
+                                <td scope="row" class="text-end">
+                                    <button class="btn" (click)="mostrarModificarSec(seccion.id)">
+                                        <i class="fa-solid fa-pen tableBtn" alt="Editar sección"></i>
+                                    </button>
+                                    <button class="btn" (click)="eliminarSec(seccion.id, seccion.nombre)">
+                                        <i class="fa-solid fa-trash tableBtn" alt="Eliminar sección"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="row mt-5 d-flex justify-content-end">
+                <div class="col-lg-6 col-12 text-end">
+                    <button class="btn btn-secondary" type="button" (click)="cancelarCambios()" style="margin-right: 15px;">Cancelar cambios</button>
+                    <button class="btn btn-primary" type="button" (click)="aplicarCambios()">Aplicar cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@if(mostrarModificarSecForm) {
+    <div class="row d-flex justify-content-center m-0">
+        <div class="col-xl-6 col-md-8 col-12 editorBox shadow pb-4 me-md-2">
+            <form [formGroup]="editSecForm" (ngSubmit)="modificarSec(idEditSec)">
+                <div class="container">
+
+                    <div class="row">
+                        <label for="seccion" class="mb-2">Título de la sección:</label>
+                        <div class="col-md-10 col-12 mb-md-0 mb-3">
+                            <input class="form-control" type="text" formControlName="nombre">
+                        </div>
+                        <div class="col-md-2 col-4">
+                            <label for="seccion" class="mb-2 d-md-none d-block">Índice:</label>
+                            <input class="form-control" type="number" formControlName="numero" placeholder="Nº">
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <label for="contenido" class="mb-2">Contenido de la sección:</label>
+                        <quill-editor 
+                            formControlName="contenido" 
+                            [modules]="{ toolbar: toolbarOptions }" 
+                            [placeholder]="'Escribe aquí...'"
+                            theme="snow"
+                            class="mb-5">
+                        </quill-editor>
+
+                        <div class="col-md-6 col-12 offset-md-6 text-end mt-5 pt-md-0 pt-4">
+                            <button class="btn btn-secondary" type="button" (click)="cancelarSecEdit()" style="margin-right: 15px;">Cancelar</button>
+                            <button class="btn btn-primary" type="submit">Aplicar</button>
                         </div>
                     </div>
 

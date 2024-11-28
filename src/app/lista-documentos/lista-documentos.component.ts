@@ -52,6 +52,7 @@ export class ListaDocumentosComponent implements OnInit {
   idEditDoc: number = 0;
   idEditSec: number = 0;
 
+  showInfo: boolean = false;
   mostrarLista: boolean = true;
   mostrarModificarForm: boolean = false;
   mostrarModificarSecForm: boolean = false;
@@ -275,6 +276,10 @@ export class ListaDocumentosComponent implements OnInit {
     if (confirmacion) {
       this.secForm.reset();
     }
+  }
+  
+  toggleInfo() {
+    this.showInfo = !this.showInfo;
   }
 
   async duplicarDocumento(nombre: string) {

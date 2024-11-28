@@ -5,6 +5,10 @@ textarea.ng-touched.ng-invalid {
   background-color: #ffe6e6;
 }
 
+.activo {
+  color: var(--color-warning);
+}
+
 .info {
   cursor: pointer;
 }

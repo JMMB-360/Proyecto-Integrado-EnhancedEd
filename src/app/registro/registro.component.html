@@ -34,8 +34,8 @@
                     </div>
                     <div class="col-md-6 col-12">
                         <label for="usuario" class="mb-2 d-flex flex-row">Usuario
-                            <div class="info ms-2" (click)="toggleInfoUser()">
-                                <i class="fa-solid fa-circle-info" ></i>
+                            <div class="info ms-2" (click)="toggleInfoUser()" [ngClass]="{ 'activo': showInfoUser === true }">
+                                <i class="fa-solid fa-circle-info"></i>
                             </div>:
                         </label>
                         <input class="form-control" type="text" id="usuario" formControlName="usuario">
@@ -50,13 +50,13 @@
                 <div class="row mt-4">
                     <div class="col-md-6 col-12 mb-md-0 mb-4">
                         <label for="contrasena" class="mb-2 d-flex flex-row">Contraseña 
-                            <div class="info ms-2" (click)="toggleInfoPass()">
-                                <i class="fa-solid fa-circle-info" ></i>
+                            <div class="info ms-2" (click)="toggleInfoPass()" [ngClass]="{ 'activo': showInfoPass === true }">
+                                <i class="fa-solid fa-circle-info"></i>
                             </div>:
                         </label>
                         <div class="input-group">
                             <input class="form-control" [type]="verContrasena ? 'text' : 'password'" id="contrasena" formControlName="contrasena">
-                            @if(!verContrasena) {
+                            @if (!verContrasena) {
                                 <button class="btn btn-outline-secondary" type="button" id="button-addon2" (click)="mostrarContra()">
                                     <i class="fa fa-eye"></i>
                                 </button>
