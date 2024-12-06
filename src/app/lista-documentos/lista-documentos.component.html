@@ -37,10 +37,16 @@
     <div class="row d-flex justify-content-center m-0">
         <div class="col-xl-6 col-md-8 col-12 editorBox shadow pb-4 me-md-2">
             <form [formGroup]="docForm" class="pb-4">
+                <div class="row">
                     <label for="documento" class="mb-2">Nombre del documento:</label>
-                    <div class="input-group mb-3">
-                        <input type="text" class="form-control" formControlName="nombre">
+                    <div class="col-12 mb-3">
+                        <input type="text" class="form-control" formControlName="nombre"
+                        [ngClass]="{'is-invalid': docForm.get('nombre')?.touched && docForm.get('nombre')?.invalid && docForm.get('nombre')?.value}">
+                        @if (docForm.get('nombre')?.touched && docForm.get('nombre')?.invalid && docForm.get('nombre')?.value) {
+                            <small class="text-danger">El nombre no puede contener carácteres especiales</small>
+                        }
                     </div>
+                </div>
             </form>
 
             <h2>{{docForm.value.nombre}}: {{secForm.value.nombre}}</h2>
@@ -48,12 +54,16 @@
                 <div class="container p-0 mt-lg-2 mt-4">
 
                     <div class="row">
-                        <label for="seccion" class="mb-2">Título de la sección:</label>
                         <div class="col-md-10 col-12 mb-md-0 mb-3">
-                            <input class="form-control" type="text" formControlName="nombre">
+                            <label for="seccion" class="mb-2">Título de la sección:</label>
+                            <input class="form-control" type="text" formControlName="nombre"
+                            [ngClass]="{'is-invalid': secForm.get('nombre')?.touched && secForm.get('nombre')?.invalid && secForm.get('nombre')?.value}">
+                            @if (secForm.get('nombre')?.touched && secForm.get('nombre')?.invalid && secForm.get('nombre')?.value) {
+                                <small class="text-danger">El título no puede contener carácteres especiales</small>
+                            }
                         </div>
                         <div class="col-md-2 col-4">
-                            <label for="seccion" class="mb-2 d-md-none d-block">Índice:</label>
+                            <label for="seccion" class="mb-2">Índice:</label>
                             <input class="form-control" type="number" formControlName="numero" placeholder="Nº">
                         </div>
                     </div>
@@ -69,7 +79,7 @@
                         </quill-editor>
 
                         <div class="col-12 d-md-none d-block mt-md-0 mt-5 pt-md-0 pt-3"></div>
-                        <div class="col-lg-6 offset-lg-6 col-12 text-end mt-lg-3 mt-md-5 mb-4">
+                        <div class="col-xl-6 offset-xl-6 col-12 text-end mt-xl-3 mt-md-5 mb-4">
                             <button class="btn btn-secondary" type="button" (click)="resetSecForm()" style="margin-right: 15px;">Reiniciar sección</button>
                             <button class="btn btn-primary" type="submit">Añadir sección</button>
                         </div>
@@ -86,14 +96,14 @@
                 </div>
             </div>
             @if (showInfo) {
-                <small class="text-warning mb-3 d-block">En caso de que no se muestre la tabla completa, puedes deslizarla horizontalmente.</small>
+                <small class="text-warning mb-3 d-block" style="color: var(--color-warningSelected);">En caso de que no se muestre la tabla completa, puedes deslizarla horizontalmente.</small>
             }
             <div class="table-responsive">
                 <table class="table table-hover table2">
                     <thead class="tableHead">
                         <tr>
-                            <th scope="col" style="width: 50%;">Sección</th>
-                            <th scope="col" style="width: 20%;">Índice</th>
+                            <th scope="col" style="width: 58%;">Sección</th>
+                            <th scope="col" style="width: 12%;">Índice</th>
                             <th scope="col"></th>
                         </tr>
                     </thead>
@@ -116,7 +126,7 @@
                 </table>
             </div>
             <div class="row mt-5 d-flex justify-content-end">
-                <div class="col-lg-6 col-12 text-end">
+                <div class="col-xl-6 col-12 text-end">
                     <button class="btn btn-secondary" type="button" (click)="cancelarCambios()" style="margin-right: 15px;">Cancelar cambios</button>
                     <button class="btn btn-primary" type="button" (click)="aplicarCambios()">Aplicar cambios</button>
                 </div>
@@ -131,12 +141,16 @@
                 <div class="container">
 
                     <div class="row">
-                        <label for="seccion" class="mb-2">Título de la sección:</label>
                         <div class="col-md-10 col-12 mb-md-0 mb-3">
-                            <input class="form-control" type="text" formControlName="nombre">
+                            <label for="seccion" class="mb-2">Título de la sección:</label>
+                            <input class="form-control" type="text" formControlName="nombre"
+                            [ngClass]="{'is-invalid': editSecForm.get('nombre')?.touched && editSecForm.get('nombre')?.invalid && editSecForm.get('nombre')?.value}">
+                            @if (editSecForm.get('nombre')?.touched && editSecForm.get('nombre')?.invalid && editSecForm.get('nombre')?.value) {
+                                <small class="text-danger">El título no puede contener carácteres especiales</small>
+                            }
                         </div>
                         <div class="col-md-2 col-4">
-                            <label for="seccion" class="mb-2 d-md-none d-block">Índice:</label>
+                            <label for="seccion" class="mb-2">Índice:</label>
                             <input class="form-control" type="number" formControlName="numero" placeholder="Nº">
                         </div>
                     </div>

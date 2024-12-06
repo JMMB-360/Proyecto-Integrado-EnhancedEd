@@ -1,7 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Documento } from '../entities/documento/documento';
 import { Usuario } from '../entities/usuario/usuario';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Seccion } from '../entities/seccion/seccion';
 import { PDFgeneratorService } from '../pdfgenerator.service';
@@ -27,7 +27,6 @@ export class ListaDocumentosComponent implements OnInit {
     [{ 'color': [] }, { 'background': [] }],
     [{ 'script': 'sub' }, { 'script': 'super' }],
     [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-    [{ 'align': [] }],
     ['link', 'image'],
     ['clean']
   ];
@@ -40,6 +39,7 @@ export class ListaDocumentosComponent implements OnInit {
   listaSecciones: Seccion[] = [];
   seccionesNuevas: Seccion[] = [];
   seccionesCopia: Seccion[] = [];
+  seccionesEliminadas: Seccion[] = [];
 
   docService: Documento = new Documento();
   documentoMod: Documento = new Documento();
@@ -53,6 +53,7 @@ export class ListaDocumentosComponent implements OnInit {
   idEditSec: number = 0;
 
   showInfo: boolean = false;
+  deleteSec: boolean = false;
   mostrarLista: boolean = true;
   mostrarModificarForm: boolean = false;
   mostrarModificarSecForm: boolean = false;
@@ -66,16 +67,16 @@ export class ListaDocumentosComponent implements OnInit {
               private alertService: AlertService,
               private confirmService: ConfirmService) {
     this.docForm = this.formBuilder.group({
-      nombre: ['', Validators.required],
+      nombre: ['', [Validators.required, this.nameValidator]],
       secciones: [[]]
     });
     this.secForm = this.formBuilder.group({
-      nombre: ['', Validators.required],
+      nombre: ['', [Validators.required, this.nameValidator]],
       numero: [null, Validators.required],
       contenido: ['']
     });
     this.editSecForm = this.formBuilder.group({
-      nombre: ['', Validators.required],
+      nombre: ['', [Validators.required, this.nameValidator]],
       numero: [null, Validators.required],
       contenido: ['']
     });
@@ -92,6 +93,7 @@ export class ListaDocumentosComponent implements OnInit {
 
   async generatePdf(nombre: string) {
     const documento = await this.docService.buscarDocumentoPorNombre(nombre);
+    documento.secciones.sort((sec1: Seccion, sec2: Seccion) => sec1.numero - sec2.numero);
     this.pdfService.generarPDF(documento);
   }
 
@@ -122,9 +124,9 @@ export class ListaDocumentosComponent implements OnInit {
       });
       
       if(numeroRepetido) {
-        this.alertService.showAlert('danger', 'El número de la sección ya está en uso ❌');
+        this.alertService.showAlert('danger', 'El índice de la sección ya está en uso ❌');
       } else if(numero === null || numero === '') {
-        this.alertService.showAlert('danger', 'La sección debe tener un número ❌');
+        this.alertService.showAlert('danger', 'La sección debe tener un índice ❌');
       } else {
         const seccionNueva = await this.secService.crearSeccion(nombre, numero, contenido, this.documentoMod.id);
         if(seccionNueva.nombre) {
@@ -160,7 +162,7 @@ export class ListaDocumentosComponent implements OnInit {
         }
       });
       if(numeroRepetido) {
-        this.alertService.showAlert('danger', 'El número de la sección ya está en uso ❌');
+        this.alertService.showAlert('danger', 'El índice de la sección ya está en uso ❌');
       } else {
         const respuesta = await this.secService.modificarSeccion(id, nombre, numero, contenido);
         if(respuesta.nombre) {
@@ -194,28 +196,41 @@ export class ListaDocumentosComponent implements OnInit {
   }
 
   async eliminarSec(id: number, nombre: string) {
-    const confirmacion = await this.confirmService.ask('Eliminar sección', '¿Desea eliminar esta sección?: '+ nombre);
+    const confirmacion = await this.confirmService.ask('Eliminar sección', '¿Desea eliminar esta sección?: '+ nombre +', la puede recuperar al cancelar los cambios');
     if(confirmacion) {
-      this.secService.eliminarSeccion(id);
+      const seccionAEliminar = await this.secService.buscarSeccionPorId(id);
+      this.seccionesEliminadas.push(seccionAEliminar);
       const index = this.listaSecciones.findIndex(sec => sec.id === id);
       if (index !== -1) {
         this.listaSecciones.splice(index, 1);
       }
       this.alertService.showAlert('success', 'Sección eliminada ✔️');
+      this.deleteSec = true;
     }
   }
 
+  nameValidator(control: AbstractControl): ValidationErrors | null {
+    const namePattern = /^[0-9\p{L}\s]+$/u;
+    const valid = namePattern.test(control.value);
+    return valid ? null : { invalidName: true };
+  }
+
   async aplicarCambios() {
-    if(this.secForm.value.nombre === "" || this.secForm.value.nombre === null && this.secForm.value.contenido === "" || this.secForm.value.contenido === null) {
+    if(!this.secForm.value.nombre && !this.secForm.value.contenido && !this.secForm.value.numero) {
       this.continuar();
     } else {
-      const confirmacion = await this.confirmService.ask('Aplicar cambios', 'Hay una sección sin guardar y no se aplicará, ¿desea continuar?');
+      const confirmacion = await this.confirmService.ask('Aplicar cambios', 'Hay una sección sin añadir y no se aplicará, ¿desea continuar?');
       if(confirmacion) {
         this.continuar();
       }
     }
   }
   async continuar() {
+    if(this.deleteSec) {
+      await this.seccionesEliminadas.forEach((seccionEliminada) => {
+        this.secService.eliminarSeccion(seccionEliminada.id);
+      });
+    }
     await this.modificarDoc();
     await this.actualizarLista();
     this.alertService.showAlert('success', 'Cambios aplicados ✔️');
@@ -236,6 +251,7 @@ export class ListaDocumentosComponent implements OnInit {
     this.emitirOcultarMenu(true);
     this.mostrarModificarForm = true;
     this.idEditDoc = id;
+    this.ordenarSecciones();
   }
 
   async mostrarModificarSec(id: number) {
@@ -300,10 +316,7 @@ export class ListaDocumentosComponent implements OnInit {
         return this.secService.crearSeccion(sec.nombre, sec.numero, sec.contenido, documentoDuplicado.id);
       });
       const seccionesCreadas = await Promise.all(promesas);
-      let seccionesDuplicadas: Seccion[] = [];
-      seccionesCreadas.forEach(sec => {
-        seccionesDuplicadas.push(sec);
-      });
+      let seccionesDuplicadas: Seccion[] = seccionesCreadas.sort((a, b) => a.numero - b.numero);
       await this.docService.modificarDocumento(documentoDuplicado.id, documentoDuplicado.nombre, seccionesDuplicadas);
     }
     await this.actualizarLista();
@@ -329,20 +342,18 @@ export class ListaDocumentosComponent implements OnInit {
   
   async cancelarCambios() {
     let seccionCambiada = false;
-    this.listaSecciones.forEach((seccionMod, index) => {
-      const seccionOriginal = this.documentoBackUp.secciones[index];
-      if (seccionOriginal.nombre !== seccionMod.nombre ||
-          seccionOriginal.numero !== seccionMod.numero ||
-          seccionOriginal.contenido !== seccionMod.contenido
+    this.documentoBackUp.secciones.sort((a, b) => a.numero - b.numero).forEach((seccionOriginal, index) => {
+      const seccionMod = this.listaSecciones[index];
+      if (seccionOriginal?.nombre !== seccionMod?.nombre ||
+          seccionOriginal?.numero !== seccionMod?.numero ||
+          seccionOriginal?.contenido !== seccionMod?.contenido
       ) {
         seccionCambiada = true;
       }
     });
-    if(seccionCambiada === false &&
-       this.docForm.value.nombre === this.documentoBackUp.nombre &&
-       (this.secForm.value.nombre === '' || this.secForm.value.nombre === null) &&
-       (this.secForm.value.numero === '' || this.secForm.value.numero === null) &&
-       (this.secForm.value.contenido === '' || this.secForm.value.contenido === null)) 
+    if (seccionCambiada === false && this.seccionesNuevas.length < 1 &&
+        this.docForm.value.nombre === this.documentoBackUp.nombre &&
+        !this.secForm.value.nombre && !this.secForm.value.numero && !this.secForm.value.contenido)
     {
       this.salir();
     } else {

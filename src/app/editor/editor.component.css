@@ -1,3 +1,8 @@
+input.is-invalid {
+    border-color: red;
+    background-color: #ffe6e6;
+}
+
 .table2 .tableBody {
     --bs-table-bg: var(--color-background2) !important;
 }
@@ -7,7 +12,7 @@
 }
 
 .table-responsive > table {
-    min-width: 400px;
+    min-width: 600px;
 }
 
 .info {

@@ -70,7 +70,11 @@
                         }
                     </div>
                     <div class="col-md-6 col-12">
-                        <label for="usuario" class="mb-2">Usuario:</label>
+                        <label for="usuario" class="mb-2">Usuario  <!--!!!!!!!!!!-->
+                            <div class="info ms-2" (click)="toggleInfoUser()" [ngClass]="{ 'activo': showInfoUser === true }">
+                                <i class="fa-solid fa-circle-info"></i>
+                            </div>:
+                        </label>
                         <input class="form-control" type="text" id="usuario" formControlName="usuario">
                     </div>
                 </div>

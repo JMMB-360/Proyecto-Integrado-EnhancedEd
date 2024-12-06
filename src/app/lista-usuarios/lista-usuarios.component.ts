@@ -29,6 +29,7 @@ export class ListaUsuariosComponent implements OnInit {
 
   verContrasena: boolean = false;
   showInfo: boolean = false;
+  showInfoUser: boolean = false;
   mostrarLista: boolean = true;
   mostrarModificarForm: boolean = false;
   mostrarPassForm: boolean = false;
@@ -98,8 +99,8 @@ export class ListaUsuariosComponent implements OnInit {
     this.editUserPassForm.markAllAsTouched();
     if (this.editUserPassForm.invalid) {
       return;
-    } else {
-      const confirmacion = await this.confirmService.ask('Cambiar contraseña', '¿Desea cambiar la contraseña?, el cambio no es revertible, pero puede volver a cambiarla libremente');
+    } else {//!!!!!!!!!!!!!!!!!!!!!!!!!
+      const confirmacion = await this.confirmService.ask('Cambiar contraseña', '¿Desea cambiar la contraseña?, el cambio no será revertido cancelando la modificación del usuario');
       if(confirmacion) {
         const contra = this.editUserPassForm.value.contrasena;
         await this.userService.modificarUsuarioPass(id, contra);
@@ -184,6 +185,7 @@ export class ListaUsuariosComponent implements OnInit {
   }
 
   mostrarEditPass() {
+    this.showInfoUser = false;
     this.mostrarModificarForm = false;
     this.mostrarPassForm = true;
   }
@@ -211,6 +213,10 @@ export class ListaUsuariosComponent implements OnInit {
     this.showInfo = !this.showInfo;
   }
 
+  toggleInfoUser() {
+    this.showInfoUser = !this.showInfoUser;
+  }
+
   async cancelarEdit() {
     if (this.editUserForm.value.dni === this.usuarioOriginal.dni &&
         this.editUserForm.value.perfil === this.usuarioOriginal.perfil &&
@@ -228,6 +234,7 @@ export class ListaUsuariosComponent implements OnInit {
 
   salirPassEdit() {
     this.editUserPassForm.reset();
+    this.showInfoUser = false;
     this.mostrarPassForm = false;
     this.mostrarModificarForm = true;
   }

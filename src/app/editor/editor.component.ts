@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { Usuario } from '../entities/usuario/usuario';
 import { Documento } from '../entities/documento/documento';
 import { Seccion } from '../entities/seccion/seccion';
@@ -27,7 +27,6 @@ export class EditorComponent implements OnInit {
     [{ 'color': [] }, { 'background': [] }],
     [{ 'script': 'sub' }, { 'script': 'super' }],
     [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-    [{ 'align': [] }],
     ['link', 'image'],
     ['clean']
   ];
@@ -58,16 +57,16 @@ export class EditorComponent implements OnInit {
               private alertService: AlertService,
               private confirmService: ConfirmService) {
     this.docForm = this.formBuilder.group({
-      nombre: ['', Validators.required],
+      nombre: ['', [Validators.required, this.nameValidator]],
       secciones: [[]]
     });
     this.secForm = this.formBuilder.group({
-      nombre: ['', Validators.required],
+      nombre: ['', [Validators.required, this.nameValidator]],
       numero: [null, Validators.required],
       contenido: ['']
     });
     this.editSecForm = this.formBuilder.group({
-      nombre: ['', Validators.required],
+      nombre: ['', [Validators.required, this.nameValidator]],
       numero: [null, Validators.required],
       contenido: ['']
     });
@@ -121,7 +120,7 @@ export class EditorComponent implements OnInit {
     const contenido = this.secForm.value.contenido;
     let numeroRepetido = false;
 
-    if(nombre != '' || nombre != null) {
+    if(nombre) {
       await this.listaSecciones.forEach(sec => {
         if(sec.numero === numero) {
           numeroRepetido = true;
@@ -129,9 +128,9 @@ export class EditorComponent implements OnInit {
       });
       
       if(numeroRepetido) {
-        this.alertService.showAlert('danger', 'El número de la sección ya está en uso ❌');
+        this.alertService.showAlert('danger', 'El índice de la sección ya está en uso ❌');
       } else if(numero === null || numero === '') {
-        this.alertService.showAlert('danger', 'La sección debe tener un número ❌');
+        this.alertService.showAlert('danger', 'La sección debe tener un índice ❌');
       } else {
         const respuesta = await this.secService.crearSeccion(nombre, numero, contenido, this.documento.id);
         if(respuesta.nombre) {
@@ -166,7 +165,7 @@ export class EditorComponent implements OnInit {
         }
       });
       if(numeroRepetido) {
-        this.alertService.showAlert('danger', 'El número de la sección ya está en uso ❌');
+        this.alertService.showAlert('danger', 'El índice de la sección ya está en uso ❌');
       } else {
         const respuesta = await this.secService.modificarSeccion(id, nombre, numero, contenido);
         if(respuesta.nombre) {
@@ -189,7 +188,7 @@ export class EditorComponent implements OnInit {
   }
 
   async eliminarSec(id: number, nombre: string) {
-    const confirmacion = await this.confirmService.ask('Eliminar sección', '¿Desea eliminar esta sección?: '+ nombre);
+    const confirmacion = await this.confirmService.ask('Eliminar sección', '¿Desea eliminar esta sección?: '+ nombre +', no podrá recuperarla');
     if(confirmacion) {
       this.secService.eliminarSeccion(id);
       const index = this.listaSecciones.findIndex(sec => sec.id === id);
@@ -200,7 +199,24 @@ export class EditorComponent implements OnInit {
     }
   }
 
-  aplicar() {
+  nameValidator(control: AbstractControl): ValidationErrors | null {
+    const namePattern = /^[0-9\p{L}\s]+$/u;
+    const valid = namePattern.test(control.value);
+    return valid ? null : { invalidName: true };
+  }
+
+  async aplicar() {
+    if(!this.secForm.value.nombre && !this.secForm.value.contenido && !this.secForm.value.numero) {
+      this.continuar();
+    } else {
+      const confirmacion = await this.confirmService.ask('Aplicar secciones', 'Hay una sección sin añadir y no se aplicará, ¿desea continuar?');
+      if(confirmacion) {
+        this.continuar();
+      }
+    }
+  }
+
+  continuar() {
     this.docService.modificarDocumento(this.documento.id, this.docForm.value.nombre, this.listaSecciones);
     if(this.listaSecciones.length > 0) {
       this.alertService.showAlert('success', 'Secciones aplicadas ✔️');
@@ -254,20 +270,18 @@ export class EditorComponent implements OnInit {
 
   async salir() {
     let seccionCambiada = false;
-    this.listaSecciones.forEach((seccionMod, index) => {
-      const seccionOriginal = this.documentoBackUp.secciones[index];
-      if (seccionOriginal.nombre !== seccionMod.nombre ||
-          seccionOriginal.numero !== seccionMod.numero ||
-          seccionOriginal.contenido !== seccionMod.contenido
+    this.documentoBackUp.secciones.sort((a, b) => a.numero - b.numero).forEach((seccionOriginal, index) => {
+      const seccionMod = this.listaSecciones[index];
+      if (seccionOriginal?.nombre !== seccionMod?.nombre ||
+          seccionOriginal?.numero !== seccionMod?.numero ||
+          seccionOriginal?.contenido !== seccionMod?.contenido
       ) {
         seccionCambiada = true;
       }
     });
-    if(seccionCambiada === false &&
-       this.docForm.value.nombre === this.documentoBackUp.nombre &&
-       (this.secForm.value.nombre === '' || this.secForm.value.nombre === null) &&
-       (this.secForm.value.numero === '' || this.secForm.value.numero === null) &&
-       (this.secForm.value.contenido === '' || this.secForm.value.contenido === null)) 
+    if (seccionCambiada === false && this.listaSecciones.length < 1 &&
+        this.docForm.value.nombre === this.documentoBackUp.nombre &&
+        !this.secForm.value.nombre && !this.secForm.value.numero && !this.secForm.value.contenido) 
     {
       this.confirmar();
     } else {
@@ -290,8 +304,11 @@ export class EditorComponent implements OnInit {
     this.menuService.cambiarMenu('lobby');
   }
 
-  resetSecForm() {
-    this.secForm.reset();
+  async resetSecForm() {
+    const confirmacion = await this.confirmService.ask('Reiniciar sección', '¿Deseas reiniciar la sección? Se perderá todo el trabajo realizado');
+    if (confirmacion) {
+      this.secForm.reset();
+    }
   }
 
   emitirOcultarMenu(valor: boolean) {

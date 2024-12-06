@@ -1,12 +1,11 @@
 input.ng-touched.ng-invalid, 
-select.ng-touched.ng-invalid, 
-textarea.ng-touched.ng-invalid {
+select.ng-touched.ng-invalid {
   border-color: red;
   background-color: #ffe6e6;
 }
 
 .table-responsive > table {
-  min-width: 1200px;
+  min-width: 1000px;/*!!!!!!!!!!!!!!*/
 }
 
 .info {
