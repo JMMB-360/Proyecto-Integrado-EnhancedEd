@@ -5,7 +5,11 @@ select.ng-touched.ng-invalid {
 }
 
 .table-responsive > table {
-  min-width: 1000px;/*!!!!!!!!!!!!!!*/
+  min-width: 1200px;
+}
+
+.activo {
+  color: var(--color-warning);
 }
 
 .info {

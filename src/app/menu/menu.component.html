@@ -257,7 +257,7 @@
                                 </div>
                                 <div class="dropdown-menu dropdown-menu-right bg-dark subMenu" [class.show]="userSubMenu">
                                     <button class="dropdown-item text-white subMenuItem" (click)="editUser()">Modificar usuario</button>
-                                    @if(!root) { <!--!!!!!!!!!!-->
+                                    @if(!root) {
                                         <button class="dropdown-item text-danger subMenuItem" (click)="deleteUser()">Eliminar usuario</button>
                                     }
                                 </div>
@@ -283,8 +283,8 @@
                         </div>
                     }
                 </div><hr>
-                @if (showInfo) { <!--!!!!!!!!!!-->
-                    <small class="text-warning mb-3 d-block ps-3" style="color: var(--color-warningSelected);">Las tablas se pueden deslizar horizontalmente en caso de no caber en la pantalla.</small>
+                @if (showInfo) {
+                    <small class="text-warning mb-3 d-block ps-3 pe-3 p-1 ms-3 me-3 infoBg">Las tablas se pueden deslizar horizontalmente en caso de no caber en la pantalla.</small>
                 }
             }
             <div class="m-lg-5 m-2">
@@ -310,8 +310,8 @@
                     </div>
                 }
             </div><hr>
-            @if (showInfo) { <!--!!!!!!!!!!-->
-                <small class="text-warning mb-3 d-block ps-3" style="color: var(--color-warningSelected);">Las tablas se pueden deslizar horizontalmente en caso de no caber en la pantalla.</small>
+            @if (showInfo) {
+                <small class="text-warning mb-3 d-block ps-3 pe-3 p-1 ms-3 me-3 infoBg">Las tablas se pueden deslizar horizontalmente en caso de no caber en la pantalla.</small>
             }
             <div class="m-lg-5 m-2">
                 <app-lista-documentos (ocultarMenu)="ocultarMenu($event)"></app-lista-documentos>

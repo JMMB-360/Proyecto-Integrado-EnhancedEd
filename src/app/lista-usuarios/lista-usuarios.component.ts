@@ -99,8 +99,8 @@ export class ListaUsuariosComponent implements OnInit {
     this.editUserPassForm.markAllAsTouched();
     if (this.editUserPassForm.invalid) {
       return;
-    } else {//!!!!!!!!!!!!!!!!!!!!!!!!!
-      const confirmacion = await this.confirmService.ask('Cambiar contraseña', '¿Desea cambiar la contraseña?, el cambio no será revertido cancelando la modificación del usuario');
+    } else {
+      const confirmacion = await this.confirmService.ask('Cambiar contraseña', '¿Desea cambiar la contraseña?, el cambio no se puede revertir, pero puede volver a cambiarla libremente');
       if(confirmacion) {
         const contra = this.editUserPassForm.value.contrasena;
         await this.userService.modificarUsuarioPass(id, contra);

@@ -117,7 +117,7 @@ export class MenuComponent implements OnInit, OnDestroy {
   }
 
   async deleteUser() {
-    this.userSubMenu = false; //!!!!!!!!!!!!!!!!!
+    this.userSubMenu = false;
     const confirmacion = await this.confirmService.ask('Eliminar usuario', '¿Desea eliminar su usuario?, se perderán todos sus documentos');
     if(confirmacion) {
       const userId = this.logedUser?.id ?? -1;

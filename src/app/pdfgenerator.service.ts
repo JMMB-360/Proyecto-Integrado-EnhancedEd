@@ -100,7 +100,7 @@ export class PDFgeneratorService {
         tituloSeccion.style.fontSize = '2.5rem';
         tituloSeccion.style.color = '#444';
         tituloSeccion.style.borderBottom = '2px solid #ddd';
-        tituloSeccion.style.marginBottom = '10px';
+        tituloSeccion.style.marginBottom = '20px';
         seccionDiv.appendChild(tituloSeccion);
         
         // Contenido sección

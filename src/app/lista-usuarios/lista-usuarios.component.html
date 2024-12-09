@@ -70,12 +70,22 @@
                         }
                     </div>
                     <div class="col-md-6 col-12">
-                        <label for="usuario" class="mb-2">Usuario  <!--!!!!!!!!!!-->
+                        <label for="usuario" class="mb-2 d-flex flex-row">Usuario
                             <div class="info ms-2" (click)="toggleInfoUser()" [ngClass]="{ 'activo': showInfoUser === true }">
                                 <i class="fa-solid fa-circle-info"></i>
                             </div>:
                         </label>
                         <input class="form-control" type="text" id="usuario" formControlName="usuario">
+                        @if (showInfoUser) {
+                            @if (menuService.root) {
+                                <small class="text-warning">
+                                    El usuario se rellena automáticamente con los datos del DNI, nombre y apellidos,
+                                    pero el usuario de root no se puede cambiar
+                                </small>
+                            } @else {
+                                <small class="text-warning">El usuario se rellena automáticamente con los datos del DNI, nombre y apellidos</small>
+                            }
+                        }
                     </div>
                 </div>
     
@@ -123,7 +133,7 @@
                 <div class="row mt-4">
                     <div class="col-12 text-center">
                         <label for="contrasena" class="mb-2 d-flex flex-row">Nueva contraseña 
-                            <div class="info ms-2" (click)="toggleInfo()">
+                            <div class="info ms-2" (click)="toggleInfo()" [ngClass]="{ 'activo': showInfo === true }">
                                 <i class="fa-solid fa-circle-info" ></i>
                             </div>:
                         </label>

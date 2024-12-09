@@ -226,15 +226,24 @@ export class ListaDocumentosComponent implements OnInit {
     }
   }
   async continuar() {
-    if(this.deleteSec) {
-      await this.seccionesEliminadas.forEach((seccionEliminada) => {
-        this.secService.eliminarSeccion(seccionEliminada.id);
-      });
+    let nombreRepe = false;
+    this.listaDocumentos.forEach((doc) => {
+      if (doc.nombre === this.docForm.value.nombre && doc.id != this.documentoMod.id) {
+        this.alertService.showAlert('danger', 'El nombre del documento ya está en uso ❌');
+        nombreRepe = true;
+      }
+    });
+    if (!nombreRepe) {
+      if (this.deleteSec) {
+        await this.seccionesEliminadas.forEach((seccionEliminada) => {
+          this.secService.eliminarSeccion(seccionEliminada.id);
+        });
+      }
+      await this.modificarDoc();
+      await this.actualizarLista();
+      this.alertService.showAlert('success', 'Cambios aplicados ✔️');
+      this.salir();
     }
-    await this.modificarDoc();
-    await this.actualizarLista();
-    this.alertService.showAlert('success', 'Cambios aplicados ✔️');
-    this.salir();
   }
 
   async mostrarModificar(id: number, nombre: string) {
@@ -301,14 +310,14 @@ export class ListaDocumentosComponent implements OnInit {
   async duplicarDocumento(nombre: string) {
     const documento: Documento = await this.docService.buscarDocumentoPorNombre(nombre);
     let numCopia = 1;
-    let documentoDuplicado: Documento = await this.docService.buscarDocumentoPorNombre(nombre+"_copia"+numCopia, true);
+    let documentoDuplicado: Documento = await this.docService.buscarDocumentoPorNombre(nombre+" copia "+numCopia, true);
 
     while (documentoDuplicado) {
       numCopia++;
-      documentoDuplicado = await this.docService.buscarDocumentoPorNombre(nombre+"_copia"+numCopia, true);
+      documentoDuplicado = await this.docService.buscarDocumentoPorNombre(nombre+" copia "+numCopia, true);
     }
-    await this.docService.crearDocumento(nombre+"_copia"+numCopia, [], this.usuario.id);
-    documentoDuplicado = await this.docService.buscarDocumentoPorNombre(nombre+"_copia"+numCopia, true);
+    await this.docService.crearDocumento(nombre+" copia "+numCopia, [], this.usuario.id);
+    documentoDuplicado = await this.docService.buscarDocumentoPorNombre(nombre+" copia "+numCopia, true);
 
     const numSecciones = documento.secciones.length;
     if (numSecciones > 0) {

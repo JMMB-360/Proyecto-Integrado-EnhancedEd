@@ -81,3 +81,8 @@ hr {
 .subMenu.show {
     display: block;
 }
+
+.infoBg {
+    background-color: rgb(121 132 138);
+    width: fit-content;
+}
