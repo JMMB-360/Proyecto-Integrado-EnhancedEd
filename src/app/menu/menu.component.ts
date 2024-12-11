@@ -83,6 +83,7 @@ export class MenuComponent implements OnInit, OnDestroy {
     Usuario.setUsuarioLogueado(new Usuario());
     this.permisos = false;
     this.root = false;
+    this.darkMode = false;
     this.logedUser = new Usuario();
     this.themeService.reset();
     this.ocultarMenu(true);
